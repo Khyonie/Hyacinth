@@ -1,0 +1,8 @@
+name: Precipice
+entry: coffee.khyonieheart.precipice.Precipice
+description: Example classloader.
+version: 1.0.0
+author: Khyonie#2082
+
+icons: LIME_CONCRETE
+family: ExampleModules
