@@ -1,0 +1,7 @@
+name: Example
+entry: coffee.khyonieheart.origami.ExampleModuleProvider
+author: Khyonie
+version: 1.0.0
+
+icon: WHITE_CONCRETE
+family: OrigamiExamples

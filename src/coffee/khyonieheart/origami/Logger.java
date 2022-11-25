@@ -22,4 +22,13 @@ public class Logger
     {
         Origami.getInstance().getServer().getConsoleSender().sendMessage("§1Origami §8> §d DEBUG §8 §8> §c" + message);
     }
+
+    /**
+     * @deprecated Resolve all todo messages before releasing your module. 
+     */
+    @Deprecated(forRemoval = false)
+    public static void todo(String message)
+    {
+        Origami.getInstance().getServer().getConsoleSender().sendMessage("§cOrigami §8> §4 TO-DO §8 §8> §c" + message);
+    }
 }

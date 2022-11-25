@@ -19,7 +19,7 @@ import coffee.khyonieheart.origami.option.Option;
 import coffee.khyonieheart.origami.util.marker.NotNull;
 
 /**
- * Default implementation of a module manager.
+ * Official implementation of a module manager.
  * @since 1.0.0
  */
 public class OrigamiModuleManager implements ModuleManager
@@ -48,27 +48,68 @@ public class OrigamiModuleManager implements ModuleManager
         // Assign a classloader, load module
 
         OrigamiModuleClassloader pmcl = OrigamiModuleClassloader.create(moduleFile, jar);
-        List<Class<? extends OrigamiModule>> moduleClasses = pmcl.collectSubclasses(OrigamiModule.class);
+        Class<?> moduleClass;
 
-        if (moduleClasses.size() == 0)
+        if (!moduleConfig.contains("entry"))
         {
-            Logger.verbose("Module " + moduleConfig.getString("name") + " does not contain any module classes. Loading as library...");
-            // TODO Create cookie-cutter library class
-        }
+            List<Class<? extends OrigamiModule>> moduleClasses = pmcl.collectSubclasses(OrigamiModule.class);
 
-        if (moduleClasses.size() > 1)
-        {
-            if (!moduleConfig.contains("entry"))
+            if (moduleClasses.size() == 0)
             {
-                Logger.log("Module" + moduleConfig.getString("name") + " contains multiple module classes, but does not specify an entry point.");
-                Logger.log("This can be solved by adding an \"entry\" key to your mod.yml, containing the fully qualified path for the desired class.");
-                return null;
+                Logger.verbose("Module " + moduleConfig.getString("name") + " does not contain any module classes. Loading as library...");
+                Logger.todo("Create cookie cutter library class");
             }
+    
+            if (moduleClasses.size() > 1)
+            {
+                if (!moduleConfig.contains("entry"))
+                {
+                    Logger.log("Module " + moduleConfig.getString("name") + " contains multiple module classes, but does not specify an entry point.");
+                    Logger.log("This can be solved by adding an \"entry\" key to your mod.yml, containing the fully qualified path for the desired class.");
+                    return null;
+                }
+            }
+        } else {
+            try {
+                moduleClass = pmcl.findClass(moduleConfig.getString("entry"), false);
 
-            
+                if (!OrigamiModule.class.isAssignableFrom(moduleClass))
+                {
+                    Logger.log("Module " + moduleConfig.getString("name") + " declares a module class, but the found class is not an Origami module class.");
+                    Logger.log("This can be solved by adding \"implements OrigamiModule\" to the class " + moduleClass.getName());
+                }
+            } catch (ClassNotFoundException e) {
+                
+            }            
         }
+
         
         return null;
+    }
+
+    private Class<?> locateModule(YamlConfiguration moduleConfig, JarFile jar, OrigamiModuleClassloader omcl, boolean skipEntry)
+    {
+        Class<?> target;
+
+        if (moduleConfig.contains("entry") && !skipEntry)
+        {
+            try {
+                target = omcl.findClass(moduleConfig.getString("entry"));
+            } catch (ClassNotFoundException e) {
+                Logger.log("Module " + moduleConfig.getString("name") + " declares a module class, but such a class could not be found.");
+                return locateModule(moduleConfig, jar, omcl, true); // Recurse
+            }
+
+            if (target != null)
+            {
+                return target;
+            }
+
+            Logger.verbose("An error occurred while attempting to load entry class \"" + moduleConfig.getString("entry") + "\" of module " + moduleConfig.getString("name") + ". Attempting to load without entry...");
+            return locateModule(moduleConfig, jar, omcl, true); // Recurse
+        }
+
+        List<Class<? extends OrigamiModule>> collected = omcl.collectSubclasses(OrigamiModule.class);
     }
 
     @Override

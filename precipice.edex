@@ -1,6 +1,0 @@
-name:Precipice
-source:precipice
-secondarysource:src
-output: ~/Servers/DevServer/1182/plugins/Origami/modules/Precipice.jar
-classpath:lib/spigot-1.19.2-R0.1-SNAPSHOT.jar:lib/spigot-api-1.19.2-R0.1-SNAPSHOT-shaded.jar
-input:mod.yml

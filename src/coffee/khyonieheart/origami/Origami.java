@@ -2,6 +2,8 @@ package coffee.khyonieheart.origami;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -10,6 +12,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import coffee.khyonieheart.origami.enums.ConfigurationType;
 import coffee.khyonieheart.origami.module.ModuleManager;
 import coffee.khyonieheart.origami.option.Option;
+import coffee.khyonieheart.origami.testing.TestIdentifier;
+import coffee.khyonieheart.origami.testing.UnitTestManager;
+import coffee.khyonieheart.origami.testing.UnitTestResult;
+import coffee.khyonieheart.origami.testing.UnitTestable;
+import coffee.khyonieheart.origami.util.Folders;
 import coffee.khyonieheart.origami.util.YamlUtils;
 
 /**
@@ -17,14 +24,16 @@ import coffee.khyonieheart.origami.util.YamlUtils;
  * @author Khyonie
  * @since 1.0.0
  */
-public class Origami extends JavaPlugin
+public class Origami extends JavaPlugin implements UnitTestable
 {
     private static YamlConfiguration DEFAULT_CONFIG = YamlUtils.ofDefault(
-        //"providers.moduleManagerProvider", "internal/coffee.khyonieheart.craftorigami.module.OrigamiModuleManager",
+        "providers.moduleManagerProvider", "internal/coffee.khyonieheart.craftorigami.module.OrigamiModuleManager",
+        "providers.commandManagerProvider", "internal/coffee/khyonieheart.craftorigami.command.OrigamiCommandManager",
         "consoleColorCodes", "windows", // Either "windows" or "unix"
-        "preferDiskConfigChanges", true,
+        "preferDiskConfigChanges", true, // If config was changed on disk, prefer those changes over the config in memory
         "disallowMultipleInnerModuleClasses", false,
         "enableVerboseLogging", false,
+        "performUnitTests", false,
         "regularLoggingFlavor", "§9Origami §8> §7LOGGING §8> §7",
         "verboseLoggingFlavor", "§9Origami §8> §eVERBOSE §8> §7"
     );
@@ -38,6 +47,8 @@ public class Origami extends JavaPlugin
     public void onEnable()
     {
         INSTANCE = this;
+
+        Folders.ensureFolders("./plugins/Origami", "providers/commands", "providers/modules", "modules");
 
         File configFile = new File("./plugins/Origami/origami.yml");
 
@@ -81,7 +92,10 @@ public class Origami extends JavaPlugin
             Logger.verbose("- Unused key: " + key + "(value: " + LOADED_CONFIGURATION.get(key) + ")");
         }
 
-        // TODO Create mods folder
+        if (LOADED_CONFIGURATION.getBoolean("performUnitTests"))
+        {
+            UnitTestManager.performUnitTests(true, this);
+        }
     }
 
     @Override
@@ -160,5 +174,21 @@ public class Origami extends JavaPlugin
             case STRING_LIST -> Option.some(LOADED_CONFIGURATION.getStringList(key));
             default -> Option.some(LOADED_CONFIGURATION.get(key));
         };
+    }
+
+    @Override
+    @TestIdentifier("Origami core tests")
+    public List<UnitTestResult> test() 
+    {
+        List<UnitTestResult> completedTests = new ArrayList<>();
+
+        completedTests.add(new UnitTestResult(INSTANCE != null, "Null plugin instance", (INSTANCE != null ? null : "Origami static instance not set"), this));
+
+        File origamiConfigFile = new File("./plugins/Origami/origami.yml");
+        completedTests.add(new UnitTestResult(origamiConfigFile.exists(), "Main config exists", (origamiConfigFile.exists() ? null : "Main config file does not exist on disk"), this));
+
+        // TODO Write more tests
+
+        return completedTests;
     }
 }

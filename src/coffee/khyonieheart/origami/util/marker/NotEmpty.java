@@ -6,7 +6,7 @@ import java.lang.annotation.Target;
 /**
  * Marker annotation used to declare that a variable-length argument cannot legally contain 0 entries.<p>
  * 
- * Ex. Given the method "foo" with a varargs String parameter
+ * E.g Given the method "foo" with a varargs String parameter:
  * <pre><code>
  *void foo(@NotEmpty String... varargs) 
  *{ 
@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * @author Khyonie
  * @since 1.0.0
  * 
- * @see {@link NotNull}, {@link Nullable}
+ * @see {@link NotNull}, {@link Nullable}, {@link NoExceptions}
  */
 @Target(ElementType.PARAMETER)
 public @interface NotEmpty {}

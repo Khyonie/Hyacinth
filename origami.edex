@@ -1,6 +1,6 @@
 name:Origami
 source:src
 secondarysource:
-output: ~/Servers/DevServer/1182/plugins/Origami.jar
+output: ~/Servers/DevServer/1192/plugins/Origami.jar
 classpath:lib/spigot-1.19.2-R0.1-SNAPSHOT.jar:lib/spigot-api-1.19.2-R0.1-SNAPSHOT-shaded.jar
 input:plugin.yml

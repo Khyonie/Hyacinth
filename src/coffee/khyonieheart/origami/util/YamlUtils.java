@@ -47,7 +47,6 @@ public class YamlUtils
     {
         Map<String, Object> rewrittenKeys = new HashMap<>();
 
-
         for (String key : configB.getKeys(true))
         {
             if (configA.contains(key))

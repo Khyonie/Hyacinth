@@ -1,16 +1,20 @@
 package coffee.khyonieheart.craftorigami.command;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 
 import coffee.khyonieheart.origami.Logger;
 import coffee.khyonieheart.origami.command.CommandManager;
 import coffee.khyonieheart.origami.command.OrigamiCommand;
+import coffee.khyonieheart.origami.print.Grammar;
 import coffee.khyonieheart.origami.util.marker.Nullable;
 
 public class OrigamiCommandManager implements CommandManager
@@ -21,6 +25,10 @@ public class OrigamiCommandManager implements CommandManager
     @Override
     public void register(String name, OrigamiCommand command, Server server) 
     {
+        Logger.verbose("Attempting to register command \"/" + name + "\"");
+
+        Objects.requireNonNull(command);
+
         if (activeCommandMap == null)
         {
             Logger.verbose("No command map has been set, attempting to cache off of server \"" + (server == null ? "null" : server.getClass().getName() + "\""));
@@ -41,22 +49,44 @@ public class OrigamiCommandManager implements CommandManager
 
                 Logger.verbose("Successfully cached command map of type \"" + activeCommandMap.getClass().getName() + "\"");
             } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+                Logger.verbose("§cFailed to register command \"" + command.getName() + "\" of class " + command.getClass().getName());
                 e.printStackTrace();
                 return;
             }
         }
+
+        registeredCommands.put(name, command);
+        command.getAliases().forEach((alias) -> registeredCommands.put(alias, command));
+
+        activeCommandMap.register(name, command);
+
+        Logger.verbose("§9Successfully registered command \"/" + name + "\" with " + command.getAliases().size() + " " + Grammar.plural(command.getAliases().size(), "alias", "aliases"));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void unregister(String name) 
     {
-        
+        Logger.verbose("Unregistering command \"/" + name + "\"");
+        registeredCommands.remove(name);
+
+        // Unregister from Bukkit
+        try {
+            Method methodGetKnownCommands = activeCommandMap.getClass().getDeclaredMethod("getKnownCommands");
+            Map<String, Command> commands = (Map<String, Command>) methodGetKnownCommands.invoke(activeCommandMap);
+
+            commands.remove(name);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException e) {
+            Logger.verbose("§cFailed to unregister command \"/" + name + "\"");
+            e.printStackTrace();
+            return;
+        }
     }
     
     @Override
     @Nullable
     public OrigamiCommand getOrigamiCommand(String name) 
     {
-        return null;
+        return registeredCommands.get(name);
     }
 }

@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * 
  * @author Khyonie
  * @since 1.0.0
- * @see {@link Nullable}, {@link NotEmpty}
+ * @see {@link Nullable}, {@link NotEmpty}, {@link NoExceptions}
  */
 @Target({ ElementType.METHOD, ElementType.PARAMETER })
 public @interface NotNull {}
