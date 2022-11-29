@@ -9,26 +9,28 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import coffee.khyonieheart.origami.enums.ConfigurationType;
+import coffee.khyonieheart.origami.command.CommandManager;
 import coffee.khyonieheart.origami.module.ModuleManager;
-import coffee.khyonieheart.origami.option.Option;
 import coffee.khyonieheart.origami.testing.TestIdentifier;
 import coffee.khyonieheart.origami.testing.UnitTestManager;
 import coffee.khyonieheart.origami.testing.UnitTestResult;
 import coffee.khyonieheart.origami.testing.UnitTestable;
 import coffee.khyonieheart.origami.util.Folders;
 import coffee.khyonieheart.origami.util.YamlUtils;
+import coffee.khyonieheart.origami.util.marker.NotNull;
+import coffee.khyonieheart.origami.util.marker.Nullable;
 
 /**
  * Main class for the Origami API.
+ * 
  * @author Khyonie
  * @since 1.0.0
  */
 public class Origami extends JavaPlugin implements UnitTestable
 {
     private static YamlConfiguration DEFAULT_CONFIG = YamlUtils.ofDefault(
-        "providers.moduleManagerProvider", "internal/coffee.khyonieheart.craftorigami.module.OrigamiModuleManager",
-        "providers.commandManagerProvider", "internal/coffee/khyonieheart.craftorigami.command.OrigamiCommandManager",
+        "providers.moduleManagerProvider", "internal/coffee.khyonieheart.craftorigami.module.OrigamiModuleManager", // Format: Filename[.jar]/<class>
+        "providers.commandManagerProvider", "internal/coffee.khyonieheart.craftorigami.command.OrigamiCommandManager", // See above
         "consoleColorCodes", "windows", // Either "windows" or "unix"
         "preferDiskConfigChanges", true, // If config was changed on disk, prefer those changes over the config in memory
         "disallowMultipleInnerModuleClasses", false,
@@ -40,6 +42,7 @@ public class Origami extends JavaPlugin implements UnitTestable
 
     private static Origami INSTANCE;
     private static ModuleManager ACTIVE_MODULE_MANAGER;
+    private static CommandManager ACTIVE_COMMAND_MANAGER;
 
     private static YamlConfiguration LOADED_CONFIGURATION = new YamlConfiguration();
 
@@ -79,7 +82,7 @@ public class Origami extends JavaPlugin implements UnitTestable
             if (LOADED_CONFIGURATION.contains(key, false))
                 continue;
 
-            Logger.verbose("§e- Missing key: " + key + " (default: " + DEFAULT_CONFIG.get(key) + ")");
+            Logger.verbose("§e - Missing key: " + key + " (default: " + DEFAULT_CONFIG.get(key) + ")");
             LOADED_CONFIGURATION.set(key, DEFAULT_CONFIG.get(key));
         }
 
@@ -89,7 +92,7 @@ public class Origami extends JavaPlugin implements UnitTestable
             if (DEFAULT_CONFIG.contains(key, false))
                 continue;
 
-            Logger.verbose("- Unused key: " + key + "(value: " + LOADED_CONFIGURATION.get(key) + ")");
+            Logger.verbose("§e - Unused key: " + key + "(value: " + LOADED_CONFIGURATION.get(key) + ")");
         }
 
         if (LOADED_CONFIGURATION.getBoolean("performUnitTests"))
@@ -102,7 +105,93 @@ public class Origami extends JavaPlugin implements UnitTestable
     public void onDisable()
     {
         saveOrigamiConfig();
-    } 
+    }  
+
+    /**
+     * Obtains the current module manager in use.
+     * @return A module manager
+     * 
+     * @since 1.0.0
+     */
+    public static ModuleManager getModuleManager()
+    {
+        return ACTIVE_MODULE_MANAGER;
+    }
+
+    /**
+     * Obtains the current command manager in use.
+     * @return A command manager
+     * 
+     * @since 1.0.0
+     */
+    public static CommandManager getCommandManager()
+    {
+        return ACTIVE_COMMAND_MANAGER;
+    }
+
+    /**
+     * Obtains Origami's current instance.
+     * @return Origami instance
+     * 
+     * @since 1.0.0
+     */
+    public static Origami getInstance()
+    {
+        return INSTANCE;
+    }
+
+    /**
+     * Obtains a value in the Origami main config.
+     * @param key Key to value
+     * @param objType Class of object to expect. May return null if value is incompatible with provided type, see {@link #getConfig(String)}
+     * @return A value from configuration in memory
+     * 
+     * @since 1.0.0
+     */
+    @Nullable
+    public static <T> T getConfig(
+        @Nullable String key,
+        @NotNull Class<T> objType
+    ) {
+        if (!LOADED_CONFIGURATION.contains(key))
+            return null;
+
+        if (key == null)
+            return null;
+
+        try {
+            return objType.cast(LOADED_CONFIGURATION.get(key));
+        } catch (ClassCastException e) {
+            return null;            
+        }
+    }
+
+    /**
+     * Obtains an object in the Origami main config. This method does not perform any automatic casting. For the automatic cast version of this method, see {@link #getConfig(String, Class)} 
+     * @param key
+     * @return 
+     * 
+     * @since 1.0.0
+     */
+    @Nullable
+    public static Object getConfig(
+        @Nullable String key
+    ) {
+        return getConfig(key, Object.class);
+    }
+
+    /**
+     * Obtains Bukkit's classloader used to load Origami. In most cases, this should be an instance of final package-private class {@link org.bukkit.plugin.java.PluginClassLoader}
+     * @return Classloader used to load Origami
+     */
+    public static ClassLoader getClassloader()
+    {
+        return INSTANCE.getClassLoader();
+    }
+
+    //
+    // Instance methods
+    //
 
     private void saveOrigamiConfig()
     {
@@ -139,41 +228,6 @@ public class Origami extends JavaPlugin implements UnitTestable
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static ModuleManager getModuleManager()
-    {
-        return ACTIVE_MODULE_MANAGER;
-    }
-
-    public static Origami getInstance()
-    {
-        return INSTANCE;
-    }
-
-    public static Option getConfig(String key, ConfigurationType type)
-    {
-        if (!LOADED_CONFIGURATION.contains(key))
-            return Option.none();
-
-        if (key == null)
-            return Option.none();
-
-        return switch(type)
-        {
-            case BOOLEAN -> Option.some(LOADED_CONFIGURATION.getBoolean(key));
-            case BOOLEAN_LIST -> Option.some(LOADED_CONFIGURATION.getBooleanList(key));
-            case DOUBLE -> Option.some(LOADED_CONFIGURATION.getDouble(key));
-            case DOUBLE_LIST -> Option.some(LOADED_CONFIGURATION.getDoubleList(key));
-            case FLOAT_LIST -> Option.some(LOADED_CONFIGURATION.getFloatList(key));
-            case INT -> Option.some(LOADED_CONFIGURATION.getInt(key));
-            case INT_LIST -> Option.some(LOADED_CONFIGURATION.getIntegerList(key));
-            case LONG -> Option.some(LOADED_CONFIGURATION.getLong(key));
-            case LONG_LIST -> Option.some(LOADED_CONFIGURATION.getLongList(key));
-            case STRING -> Option.some(LOADED_CONFIGURATION.getString(key));
-            case STRING_LIST -> Option.some(LOADED_CONFIGURATION.getStringList(key));
-            default -> Option.some(LOADED_CONFIGURATION.get(key));
-        };
     }
 
     @Override

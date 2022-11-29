@@ -1,17 +1,15 @@
 package coffee.khyonieheart.origami;
 
-import coffee.khyonieheart.origami.enums.ConfigurationType;
-
 public class Logger 
 {
     public static void log(String message)
     {
-        Origami.getInstance().getServer().getConsoleSender().sendMessage(Origami.getConfig("regularLoggingFlavor", ConfigurationType.STRING).unwrap(String.class) + message);
+        Origami.getInstance().getServer().getConsoleSender().sendMessage(Origami.getConfig("regularLoggingFlavor", String.class) + message);
     }   
     
     public static void verbose(String message)
     {
-        Origami.getInstance().getServer().getConsoleSender().sendMessage(Origami.getConfig("verboseLoggingFlavor", ConfigurationType.STRING).unwrap(String.class) + message);
+        Origami.getInstance().getServer().getConsoleSender().sendMessage(Origami.getConfig("verboseLoggingFlavor", String.class) + message);
     }
 
     /**

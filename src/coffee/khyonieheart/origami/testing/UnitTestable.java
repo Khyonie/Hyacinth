@@ -14,7 +14,7 @@ public interface UnitTestable
 {
     /**
      * Performs a unit test. This method should not legally throw exceptions.
-     * @return Whether or not the test was passed.
+     * @return A list of unit test results
      */
     @NoExceptions
     public List<UnitTestResult> test();

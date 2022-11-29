@@ -1,9 +1,15 @@
 package coffee.khyonieheart.origami.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import coffee.khyonieheart.origami.util.marker.NotEmpty;
+import coffee.khyonieheart.origami.util.marker.NotNull;
 
 public class YamlUtils 
 {
@@ -35,6 +41,34 @@ public class YamlUtils
 
         return config;
     }   
+
+    public static boolean containsAll(
+        @NotNull YamlConfiguration configuration,
+        @NotEmpty String... keys
+    ) {
+        for (String key : keys)
+        {
+            if (configuration.contains(key))
+            {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public static List<String> getMissingKeys(
+        @NotNull YamlConfiguration configuration,
+        @NotEmpty String... keys
+    ) {
+        List<String> data = new ArrayList<>(Arrays.asList(keys));
+
+        data.removeIf((key) -> configuration.contains(key));
+
+        return data;
+    }
     
     /**
      * Attempts to merge two configurations with similar, if not same defaults, storing the result in configuration A.
