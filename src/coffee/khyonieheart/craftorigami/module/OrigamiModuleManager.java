@@ -26,6 +26,7 @@ import coffee.khyonieheart.origami.exception.OrigamiModuleException;
 import coffee.khyonieheart.origami.module.ModuleManager;
 import coffee.khyonieheart.origami.module.OrigamiModule;
 import coffee.khyonieheart.origami.module.marker.PreventAutoLoad;
+import coffee.khyonieheart.origami.module.provider.Chainloadable;
 import coffee.khyonieheart.origami.option.Option;
 import coffee.khyonieheart.origami.print.Grammar;
 import coffee.khyonieheart.origami.util.Reflect;
@@ -38,7 +39,7 @@ import coffee.khyonieheart.origami.util.marker.NotNull;
  * @author Khyonie
  * @since 1.0.0
  */
-public class OrigamiModuleManager implements ModuleManager
+public class OrigamiModuleManager implements ModuleManager, Chainloadable
 {
     private Map<String, OrigamiModuleClassloader> activeClassloaders = new HashMap<>();
     private Map<String, Class<?>> cachedClasses = new HashMap<>();
@@ -302,5 +303,10 @@ public class OrigamiModuleManager implements ModuleManager
         
         return null;
     }
-    
+
+    @Override
+    public void transfer(Map<String, Class<?>> loadedClasses) 
+    {
+        this.cachedClasses.putAll(loadedClasses);
+    }
 }
