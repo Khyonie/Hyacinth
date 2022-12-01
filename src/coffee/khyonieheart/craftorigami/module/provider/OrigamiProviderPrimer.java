@@ -66,9 +66,26 @@ public class OrigamiProviderPrimer implements ModuleManager
             throw new OrigamiModuleException("Provider file " + moduleFile.getName() + " does not contain a valid mod.yml, missing keys: " + Arrays.toString(missingKeys.toArray(new String[missingKeys.size()])));
         }
 
-        Logger.verbose(moduleFile.getName() + "'s mod.yml passed verification");
+        Logger.verbose(moduleFile.getName() + "'s provider.yml passed verification");
 
         OrigamiProviderClassloader mpcl = new OrigamiProviderClassloader(moduleFile, this.getClass().getClassLoader(), this);
+
+
+        Class<?> providerClass;
+        try {
+            providerClass = mpcl.findClass(classSource);
+
+            if (!ModuleManager.class.isAssignableFrom(providerClass))
+            {
+                jar.close();
+                throw new ClassCastException();
+            }
+        } catch (ClassNotFoundException e) {
+            jar.close();
+            return null;
+        } catch (ClassCastException e) {
+            return null;
+        }
 
         jar.close();
         return null;
