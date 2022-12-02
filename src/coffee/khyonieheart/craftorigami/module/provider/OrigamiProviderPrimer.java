@@ -68,12 +68,12 @@ public class OrigamiProviderPrimer implements ModuleManager
 
         Logger.verbose(moduleFile.getName() + "'s provider.yml passed verification");
 
-        OrigamiProviderClassloader mpcl = new OrigamiProviderClassloader(moduleFile, this.getClass().getClassLoader(), this);
+        OrigamiProviderClassloader opcl = new OrigamiProviderClassloader(moduleFile, this.getClass().getClassLoader(), this);
 
 
         Class<?> providerClass;
         try {
-            providerClass = mpcl.findClass(classSource);
+            providerClass = opcl.findClass(classSource);
 
             if (!ModuleManager.class.isAssignableFrom(providerClass))
             {
@@ -82,9 +82,9 @@ public class OrigamiProviderPrimer implements ModuleManager
             }
         } catch (ClassNotFoundException e) {
             jar.close();
-            return null;
+            throw new IllegalStateException("Could not find class \"" + classSource + "\" in file " + moduleFile.getName(), e);
         } catch (ClassCastException e) {
-            return null;
+            throw new IllegalStateException("Class \"" + classSource + "\" does not implement a ModuleManager", e);
         }
 
         jar.close();
