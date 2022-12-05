@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import coffee.khyonieheart.craftorigami.module.OrigamiModuleManager;
+import coffee.khyonieheart.craftorigami.module.provider.OrigamiProviderPrimer;
 import coffee.khyonieheart.origami.Logger;
 import coffee.khyonieheart.origami.Origami;
 import coffee.khyonieheart.origami.exception.InstantiationRuntimeException;
@@ -46,9 +47,19 @@ public interface ModuleManager
 
     public Class<?> getGlobalClass(String name, ClassLoader accessor);
 
+    /**
+     * Obtains a module manager instance from a provider source.
+     * @param sourcePath Provider source path (<Source>/<Fully qualified class>, where "Source" translates to file <Source>.jar inside providers/modules/)
+     * @return
+     * @throws FileNotFoundException
+     * @throws OrigamiModuleException
+     */
     public static ModuleManager obtainModuleManager(
         @NotNull String sourcePath
-    ) {
+    )
+        throws FileNotFoundException,
+            OrigamiModuleException
+    {
         String[] splitData = sourcePath.split("/");
 
         if (splitData.length != 2)
@@ -96,9 +107,26 @@ public interface ModuleManager
             return new OrigamiModuleManager();
         }
 
-        
+        Logger.verbose("Sourcing external module manager");
 
-        return manager;
+        File providerSource = moduleFileWithName(source);
+        if (!providerSource.exists())
+        {
+            throw new FileNotFoundException("Proposed module manager file \"" + source + ".jar\" does not exist");
+        }
+
+        OrigamiProviderPrimer primer = new OrigamiProviderPrimer();
+
+        try {
+            primer.setProviderClass(classPath);
+
+            primer.loadModule(providerSource);
+        } catch (IllegalArgumentException | IOException | OrigamiModuleException e) {
+            Logger.log("§cFailed to instantiate module manager provider class \"" + classPath + "\", falling back to Origami module manager");
+            e.printStackTrace();
+
+            return new OrigamiModuleManager();
+        }
     }
 
     public static File moduleFileWithName(String name)

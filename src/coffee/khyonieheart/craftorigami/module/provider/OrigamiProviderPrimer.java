@@ -18,21 +18,19 @@ import coffee.khyonieheart.origami.Logger;
 import coffee.khyonieheart.origami.exception.OrigamiModuleException;
 import coffee.khyonieheart.origami.module.ModuleManager;
 import coffee.khyonieheart.origami.module.OrigamiModule;
+import coffee.khyonieheart.origami.module.provider.ClassProvider;
 import coffee.khyonieheart.origami.option.Option;
 import coffee.khyonieheart.origami.util.YamlUtils;
 
 /**
- * Module manager implementation that acts as the first link in the chainloading of a module manager provider
+ * Module manager implementation that acts as the first link in the chainloading of a module manager provider.
  */
-public class OrigamiProviderPrimer implements ModuleManager
+public class OrigamiProviderPrimer implements ModuleManager, ClassProvider
 {
     private Map<String, Class<?>> loadedClasses = new HashMap<>();
-    private String classSource;
+    private OrigamiProviderClassloader classloader; 
 
-    public OrigamiProviderPrimer(String classSource)
-    {
-        this.classSource = classSource;
-    }
+    private String providerSource;
 
     @Override
     public OrigamiModule loadModule(File moduleFile) throws IllegalArgumentException, FileNotFoundException, IOException, OrigamiModuleException 
@@ -63,17 +61,17 @@ public class OrigamiProviderPrimer implements ModuleManager
             jar.close();
 
             List<String> missingKeys = YamlUtils.getMissingKeys(moduleConfig, "name", "description", "author", "version");
-            throw new OrigamiModuleException("Provider file " + moduleFile.getName() + " does not contain a valid mod.yml, missing keys: " + Arrays.toString(missingKeys.toArray(new String[missingKeys.size()])));
+            throw new OrigamiModuleException("Provider file " + moduleFile.getName() + " does not contain a valid provider.yml, missing keys: " + Arrays.toString(missingKeys.toArray(new String[missingKeys.size()])));
         }
 
         Logger.verbose(moduleFile.getName() + "'s provider.yml passed verification");
 
-        OrigamiProviderClassloader opcl = new OrigamiProviderClassloader(moduleFile, this.getClass().getClassLoader(), this);
-
+        classloader = new OrigamiProviderClassloader(moduleFile, this.getClass().getClassLoader(), this);
 
         Class<?> providerClass;
+
         try {
-            providerClass = opcl.findClass(classSource);
+            providerClass = classloader.findClass(providerSource);
 
             if (!ModuleManager.class.isAssignableFrom(providerClass))
             {
@@ -82,9 +80,9 @@ public class OrigamiProviderPrimer implements ModuleManager
             }
         } catch (ClassNotFoundException e) {
             jar.close();
-            throw new IllegalStateException("Could not find class \"" + classSource + "\" in file " + moduleFile.getName(), e);
+            throw new IllegalStateException("Could not find class \"" + providerSource + "\" in file " + moduleFile.getName(), e);
         } catch (ClassCastException e) {
-            throw new IllegalStateException("Class \"" + classSource + "\" does not implement a ModuleManager", e);
+            throw new IllegalStateException("Class \"" + providerSource + "\" does not implement a ModuleManager", e);
         }
 
         jar.close();
@@ -101,5 +99,11 @@ public class OrigamiProviderPrimer implements ModuleManager
     public Class<?> getGlobalClass(String name, ClassLoader accessor) 
     {
         return loadedClasses.get(name);
+    }
+
+    @Override
+    public void setProviderClass(String providerClass) 
+    {
+        this.providerSource = providerClass;
     }
 }

@@ -22,7 +22,7 @@ public class Reflect
      * 
      * @throws InstantiationRuntimeException Thrown when another exception is thrown.
      * 
-     * @implNote Because of how {@link Class#getConstructor(Class...)} works, downcasting may be necessary.
+     * @implNote Because of how {@link Class#getConstructor(Class...)} works, downcasting arguments may be necessary.
      */
     public static <T> T simpleInstantiate(
         @NotNull Class<T> clazz, 
