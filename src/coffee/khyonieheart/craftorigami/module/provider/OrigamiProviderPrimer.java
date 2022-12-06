@@ -18,19 +18,17 @@ import coffee.khyonieheart.origami.Logger;
 import coffee.khyonieheart.origami.exception.OrigamiModuleException;
 import coffee.khyonieheart.origami.module.ModuleManager;
 import coffee.khyonieheart.origami.module.OrigamiModule;
-import coffee.khyonieheart.origami.module.provider.ClassProvider;
 import coffee.khyonieheart.origami.option.Option;
 import coffee.khyonieheart.origami.util.YamlUtils;
 
 /**
  * Module manager implementation that acts as the first link in the chainloading of a module manager provider.
  */
-public class OrigamiProviderPrimer implements ModuleManager, ClassProvider
+public class OrigamiProviderPrimer implements ModuleManager
 {
+    private Map<String, OrigamiProviderClassloader> classloaders = new HashMap<>();
     private Map<String, Class<?>> loadedClasses = new HashMap<>();
-    private OrigamiProviderClassloader classloader; 
-
-    private String providerSource;
+    private OrigamiModule associatedLibrary;
 
     @Override
     public OrigamiModule loadModule(File moduleFile) throws IllegalArgumentException, FileNotFoundException, IOException, OrigamiModuleException 
@@ -66,44 +64,39 @@ public class OrigamiProviderPrimer implements ModuleManager, ClassProvider
 
         Logger.verbose(moduleFile.getName() + "'s provider.yml passed verification");
 
-        classloader = new OrigamiProviderClassloader(moduleFile, this.getClass().getClassLoader(), this);
+        classloaders.put(moduleFile.getName(), new OrigamiProviderClassloader(moduleFile, this.getClass().getClassLoader(), this));
+        associatedLibrary = OrigamiLibraryModule.create(moduleConfig, jar);
 
-        Class<?> providerClass;
-
-        try {
-            providerClass = classloader.findClass(providerSource);
-
-            if (!ModuleManager.class.isAssignableFrom(providerClass))
-            {
-                jar.close();
-                throw new ClassCastException();
-            }
-        } catch (ClassNotFoundException e) {
-            jar.close();
-            throw new IllegalStateException("Could not find class \"" + providerSource + "\" in file " + moduleFile.getName(), e);
-        } catch (ClassCastException e) {
-            throw new IllegalStateException("Class \"" + providerSource + "\" does not implement a ModuleManager", e);
-        }
-
-        jar.close();
-        return null;
+        return associatedLibrary;
     }
 
     @Override
     public Option getModule(String moduleName) 
     {
-        return null;
+        return Option.none();
     }
 
     @Override
     public Class<?> getGlobalClass(String name, ClassLoader accessor) 
     {
-        return loadedClasses.get(name);
-    }
+        if (loadedClasses.containsKey(name))
+        {
+            return loadedClasses.get(name);
+        }
 
-    @Override
-    public void setProviderClass(String providerClass) 
-    {
-        this.providerSource = providerClass;
+        Class<?> buffer;
+        for (OrigamiProviderClassloader loader : classloaders.values())
+        {
+            try {
+                buffer = loader.findClass(name, false);
+                loadedClasses.put(name, buffer);
+
+                return buffer;
+            } catch (ClassNotFoundException e) {
+                continue;
+            }
+        }
+
+        return null;
     }
 }

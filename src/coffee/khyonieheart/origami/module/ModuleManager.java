@@ -118,11 +118,27 @@ public interface ModuleManager
         OrigamiProviderPrimer primer = new OrigamiProviderPrimer();
 
         try {
-            primer.setProviderClass(classPath);
-
             primer.loadModule(providerSource);
+            
+            providerClass = primer.getGlobalClass(classPath, Origami.getClassloader());
+
+            if (providerClass == null)
+            {
+                throw new OrigamiModuleException("Proposed external module manager class \"" + classPath + "\" does not exist");
+            }
         } catch (IllegalArgumentException | IOException | OrigamiModuleException e) {
-            Logger.log("§cFailed to instantiate module manager provider class \"" + classPath + "\", falling back to Origami module manager");
+            Logger.log("§cFailed to locate module manager provider class \"" + classPath + "\", falling back to Origami module manager");
+            e.printStackTrace();
+
+            return new OrigamiModuleManager();
+        }
+
+        try {
+            manager = (ModuleManager) Reflect.simpleInstantiate(providerClass);
+
+            return manager;
+        } catch (InstantiationRuntimeException e) {
+            Logger.log("§cFailed to instantiate external module manager provider class \"" + providerClass.getName() + "\", falling back to Origami module manager");
             e.printStackTrace();
 
             return new OrigamiModuleManager();
