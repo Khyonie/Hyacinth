@@ -19,12 +19,14 @@ import coffee.khyonieheart.origami.exception.OrigamiModuleException;
 import coffee.khyonieheart.origami.module.ModuleManager;
 import coffee.khyonieheart.origami.module.OrigamiModule;
 import coffee.khyonieheart.origami.option.Option;
+import coffee.khyonieheart.origami.testing.UnitTestResult;
+import coffee.khyonieheart.origami.testing.UnitTestable;
 import coffee.khyonieheart.origami.util.YamlUtils;
 
 /**
  * Module manager implementation that acts as the first link in the chainloading of a module manager provider.
  */
-public class OrigamiProviderPrimer implements ModuleManager
+public class OrigamiProviderPrimer implements ModuleManager, UnitTestable
 {
     private Map<String, OrigamiProviderClassloader> classloaders = new HashMap<>();
     private Map<String, Class<?>> loadedClasses = new HashMap<>();
@@ -97,6 +99,13 @@ public class OrigamiProviderPrimer implements ModuleManager
             }
         }
 
+        return null;
+    }
+
+    @Override
+    public List<UnitTestResult> test() 
+    {
+        
         return null;
     }
 }

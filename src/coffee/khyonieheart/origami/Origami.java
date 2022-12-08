@@ -1,6 +1,7 @@
 package coffee.khyonieheart.origami;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import coffee.khyonieheart.origami.command.CommandManager;
+import coffee.khyonieheart.origami.exception.OrigamiModuleException;
 import coffee.khyonieheart.origami.module.ModuleManager;
 import coffee.khyonieheart.origami.testing.TestIdentifier;
 import coffee.khyonieheart.origami.testing.UnitTestManager;
@@ -95,9 +97,15 @@ public class Origami extends JavaPlugin implements UnitTestable
             Logger.verbose("§e - Unused key: " + key + "(value: " + LOADED_CONFIGURATION.get(key) + ")");
         }
 
+        try {
+            ACTIVE_MODULE_MANAGER = ModuleManager.obtainModuleManager(LOADED_CONFIGURATION.getString("providers.moduleManagerProvider"));
+        } catch (FileNotFoundException | OrigamiModuleException e) {
+            e.printStackTrace();
+        }
+
         if (LOADED_CONFIGURATION.getBoolean("performUnitTests"))
         {
-            UnitTestManager.performUnitTests(true, this);
+            UnitTestManager.performUnitTests(true, this, (UnitTestable) ACTIVE_MODULE_MANAGER);
         }
     }
 

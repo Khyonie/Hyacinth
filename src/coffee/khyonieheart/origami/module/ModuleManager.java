@@ -50,6 +50,7 @@ public interface ModuleManager
     /**
      * Obtains a module manager instance from a provider source.
      * @param sourcePath Provider source path (<Source>/<Fully qualified class>, where "Source" translates to file <Source>.jar inside providers/modules/)
+     * // TODO Fix broken comment format
      * @return
      * @throws FileNotFoundException
      * @throws OrigamiModuleException
@@ -109,7 +110,7 @@ public interface ModuleManager
 
         Logger.verbose("Sourcing external module manager");
 
-        File providerSource = moduleFileWithName(source);
+        File providerSource = providerFileWithName(source);
         if (!providerSource.exists())
         {
             throw new FileNotFoundException("Proposed module manager file \"" + source + ".jar\" does not exist");
@@ -135,6 +136,8 @@ public interface ModuleManager
 
         try {
             manager = (ModuleManager) Reflect.simpleInstantiate(providerClass);
+
+            Logger.verbose("Instantiated new module manager " + manager.getClass().getName());
 
             return manager;
         } catch (InstantiationRuntimeException e) {
