@@ -3,8 +3,10 @@ package coffee.khyonieheart.origami;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.JarFile;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,6 +20,7 @@ import coffee.khyonieheart.origami.testing.UnitTestManager;
 import coffee.khyonieheart.origami.testing.UnitTestResult;
 import coffee.khyonieheart.origami.testing.UnitTestable;
 import coffee.khyonieheart.origami.util.Folders;
+import coffee.khyonieheart.origami.util.JarUtils;
 import coffee.khyonieheart.origami.util.YamlUtils;
 import coffee.khyonieheart.origami.util.marker.NotNull;
 import coffee.khyonieheart.origami.util.marker.Nullable;
@@ -47,10 +50,13 @@ public class Origami extends JavaPlugin implements UnitTestable
     private static CommandManager ACTIVE_COMMAND_MANAGER;
 
     private static YamlConfiguration LOADED_CONFIGURATION = new YamlConfiguration();
+    private static YamlConfiguration METADATA = new YamlConfiguration();
 
     @Override
     public void onEnable()
     {
+        long currentTime = System.currentTimeMillis();
+
         INSTANCE = this;
 
         Folders.ensureFolders("./plugins/Origami", "providers/commands", "providers/modules", "modules");
@@ -70,7 +76,7 @@ public class Origami extends JavaPlugin implements UnitTestable
             if (!created)
                 LOADED_CONFIGURATION.load(configFile);
             
-            Logger.verbose("Loaded config!");
+            Logger.verbose("Loaded config");
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
 
@@ -97,16 +103,26 @@ public class Origami extends JavaPlugin implements UnitTestable
             Logger.verbose("§e - Unused key: " + key + "(value: " + LOADED_CONFIGURATION.get(key) + ")");
         }
 
+        METADATA.load(new InputStreamReader(JarUtils.toInputStream(this.getJarFile(), "meta.yml")));
+
+        Logger.log("Loading Origami " + METADATA.getString("version"));
+
         try {
             ACTIVE_MODULE_MANAGER = ModuleManager.obtainModuleManager(LOADED_CONFIGURATION.getString("providers.moduleManagerProvider"));
         } catch (FileNotFoundException | OrigamiModuleException e) {
             e.printStackTrace();
         }
 
+        Logger.verbose("Loading complete");
+        Logger.log("Loaded in " + (System.currentTimeMillis() - currentTime) + " ms");
+
+        // Loading complete
+
         if (LOADED_CONFIGURATION.getBoolean("performUnitTests"))
         {
             UnitTestManager.performUnitTests(true, this, (UnitTestable) ACTIVE_MODULE_MANAGER);
         }
+
     }
 
     @Override
@@ -195,6 +211,21 @@ public class Origami extends JavaPlugin implements UnitTestable
     public static ClassLoader getClassloader()
     {
         return INSTANCE.getClassLoader();
+    }
+
+    private static JarFile CACHED_JAR;
+    public JarFile getJarFile()
+    {
+        if (CACHED_JAR == null)
+        {
+            try {
+                CACHED_JAR = new JarFile(this.getFile());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return CACHED_JAR;
     }
 
     //

@@ -61,6 +61,8 @@ public interface ModuleManager
         throws FileNotFoundException,
             OrigamiModuleException
     {
+        Logger.verbose("Sourcing module manager from \"" + sourcePath + "\"");
+        
         String[] splitData = sourcePath.split("/");
 
         if (splitData.length != 2)
@@ -87,13 +89,15 @@ public interface ModuleManager
                     throw new NullPointerException();
                 }
 
-                providerClass = ModuleManager.class.asSubclass(potentialProviderClass);
+                providerClass = potentialProviderClass.asSubclass(ModuleManager.class);
             } catch (ClassNotFoundException | NullPointerException e) {
                 Logger.log("§cFailed to find internal module manager \"" + classPath + "\", falling back to Origami module manager");
                 providerClass = OrigamiModuleManager.class;
             } catch (ClassCastException e) {
                 Logger.log("§cPotential module manager provider \"" + classPath + "\" is not a valid ModuleManager, falling back to Origami module manager");
                 providerClass = OrigamiModuleManager.class;
+
+                e.printStackTrace();
             }
 
             try {

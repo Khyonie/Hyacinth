@@ -3,6 +3,7 @@ package coffee.khyonieheart.origami.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.jar.JarEntry;
@@ -46,4 +47,14 @@ public class JarUtils
 
         return target;
     }    
+
+    public static InputStream toInputStream(JarFile jar, String firepathInJar)
+    {
+        try {
+            return jar.getInputStream(jar.getEntry(firepathInJar));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

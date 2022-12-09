@@ -9,6 +9,11 @@ public class Logger
     
     public static void verbose(String message)
     {
+        if (!Origami.getConfig("enableVerboseLogging", Boolean.class))
+        {
+            return;
+        }
+
         Origami.getInstance().getServer().getConsoleSender().sendMessage(Origami.getConfig("verboseLoggingFlavor", String.class) + message);
     }
 
@@ -18,7 +23,7 @@ public class Logger
     @Deprecated(forRemoval = false)
     public static void debug(String message)
     {
-        Origami.getInstance().getServer().getConsoleSender().sendMessage("§1Origami §8> §d DEBUG §8 §8> §c" + message);
+        Origami.getInstance().getServer().getConsoleSender().sendMessage("§1Origami §a> §d DEBUG §8 §8> §c" + message);
     }
 
     /**
@@ -27,6 +32,6 @@ public class Logger
     @Deprecated(forRemoval = false)
     public static void todo(String message)
     {
-        Origami.getInstance().getServer().getConsoleSender().sendMessage("§cOrigami §8> §4 TO-DO §8 §8> §c" + message);
+        Origami.getInstance().getServer().getConsoleSender().sendMessage("§cOrigami §a> §4 TO-DO §8 §8> §c" + message);
     }
 }
