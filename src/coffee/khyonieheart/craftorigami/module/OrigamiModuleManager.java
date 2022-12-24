@@ -44,6 +44,8 @@ public class OrigamiModuleManager implements ModuleManager, Chainloadable
     private Map<String, OrigamiModuleClassloader> activeClassloaders = new HashMap<>();
     private Map<String, Class<?>> cachedClasses = new HashMap<>();
 
+    private Map<String, OrigamiModule> loadedModules = new HashMap<>();
+
     /**
      * @implNote This implementation may additionally throw an {@link InstantiationRuntimeException}.
      */
@@ -84,7 +86,7 @@ public class OrigamiModuleManager implements ModuleManager, Chainloadable
         OrigamiModuleClassloader omcl = OrigamiModuleClassloader.create(moduleFile, jar);
         activeClassloaders.put(moduleFile.getName(), omcl);
 
-        Logger.verbose("Registered new Origami classloader " + moduleFile.getName() + "/" + moduleConfig.getString("name") + "(" + activeClassloaders.size() + " registered)");
+        Logger.verbose("Registered new Origami classloader " + moduleFile.getName() + "/" + moduleConfig.getString("name") + " (" + activeClassloaders.size() + " registered)");
 
         // Attempt to load dependencies
         if (moduleConfig.contains("requires"))
@@ -100,7 +102,7 @@ public class OrigamiModuleManager implements ModuleManager, Chainloadable
 
                 if (dependency.equals(moduleConfig.get("name")))
                 {
-                    Logger.verbose("§eModule " + moduleFile.getName() + "/" + moduleConfig.getString("name") + " lists itself as a dependency! Ignoring...");
+                    Logger.verbose("§eModule " + moduleFile.getName() + "/" + moduleConfig.getString("name") + " lists itself as a dependency! Ignoring");
                     continue;
                 }
 
@@ -217,6 +219,8 @@ public class OrigamiModuleManager implements ModuleManager, Chainloadable
 
         // Finished
 
+        loadedModules.put(moduleConfig.getString("name"), module);
+
         if (!encounteredErrors)
         {
             Logger.log("§aFinished loading " + moduleFile.getName() + "/" + moduleConfig.getString("name"));
@@ -251,7 +255,7 @@ public class OrigamiModuleManager implements ModuleManager, Chainloadable
                 return target;
             }
 
-            Logger.verbose("An error occurred while attempting to load entry class \"" + moduleConfig.getString("entry") + "\" of module " + moduleConfig.getString("name") + ". Attempting to load without entry...");
+            Logger.verbose("An error occurred while attempting to load entry class \"" + moduleConfig.getString("entry") + "\" of module " + moduleConfig.getString("name") + ". Attempting to load without entry");
             return locateModule(moduleConfig, jar, omcl, true); // Recurse
         }
 
@@ -259,7 +263,7 @@ public class OrigamiModuleManager implements ModuleManager, Chainloadable
 
         if (collected.size() == 0)
         {
-            Logger.verbose("Module " + moduleConfig.getString("name") + " does not contain any module classes. Loading as library...");
+            Logger.verbose("Module " + moduleConfig.getString("name") + " does not contain any module classes. Loading as library");
             Logger.todo("Create cookie cutter library class");
             return null;
         }

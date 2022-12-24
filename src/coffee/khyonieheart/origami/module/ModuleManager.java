@@ -154,11 +154,11 @@ public interface ModuleManager
 
     public static File moduleFileWithName(String name)
     {
-        return new File("plugins/Origami/modules/" + name + ".jar");
+        return new File("./Origami/modules/" + name + ".jar");
     }
 
     public static File providerFileWithName(String name)
     {
-        return new File("plugins/Origami/providers/modules/" + name + ".jar");
+        return new File("./Origami/providers/modules/" + name + ".jar");
     }
 }

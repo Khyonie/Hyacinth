@@ -12,6 +12,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import coffee.khyonieheart.craftorigami.command.OrigamiCommandManager;
 import coffee.khyonieheart.origami.command.CommandManager;
 import coffee.khyonieheart.origami.exception.OrigamiModuleException;
 import coffee.khyonieheart.origami.module.ModuleManager;
@@ -33,21 +34,21 @@ import coffee.khyonieheart.origami.util.marker.Nullable;
  */
 public class Origami extends JavaPlugin implements UnitTestable
 {
-    private static YamlConfiguration DEFAULT_CONFIG = YamlUtils.ofDefault(
+    private static YamlConfiguration DEFAULT_CONFIG = YamlUtils.of(
         "providers.moduleManagerProvider", "internal/coffee.khyonieheart.craftorigami.module.OrigamiModuleManager", // Format: Filename[.jar]/<class>
         "providers.commandManagerProvider", "internal/coffee.khyonieheart.craftorigami.command.OrigamiCommandManager", // See above
-        "consoleColorCodes", "windows", // Either "windows" or "unix"
         "preferDiskConfigChanges", true, // If config was changed on disk, prefer those changes over the config in memory
         "disallowMultipleInnerModuleClasses", false,
         "enableVerboseLogging", false,
         "performUnitTests", false,
+        "consoleColorCodes", "windows", // Either "windows" or "unix"
         "regularLoggingFlavor", "§9Origami §8> §7LOGGING §8> §7",
         "verboseLoggingFlavor", "§9Origami §8> §eVERBOSE §8> §7"
     );
 
     private static Origami INSTANCE;
     private static ModuleManager ACTIVE_MODULE_MANAGER;
-    private static CommandManager ACTIVE_COMMAND_MANAGER;
+    private static CommandManager ACTIVE_COMMAND_MANAGER = new OrigamiCommandManager(); // TODO This
 
     private static YamlConfiguration LOADED_CONFIGURATION = new YamlConfiguration();
     private static YamlConfiguration METADATA = new YamlConfiguration();
@@ -59,9 +60,9 @@ public class Origami extends JavaPlugin implements UnitTestable
 
         INSTANCE = this;
 
-        Folders.ensureFolders("./plugins/Origami", "providers/commands", "providers/modules", "modules");
+        Folders.ensureFolders("./Origami", "providers/commands", "providers/modules", "modules");
 
-        File configFile = new File("./plugins/Origami/origami.yml");
+        File configFile = new File("origami.yml");
 
         try {
             boolean created = false;
@@ -70,7 +71,7 @@ public class Origami extends JavaPlugin implements UnitTestable
             {
                 DEFAULT_CONFIG.save(configFile);
                 LOADED_CONFIGURATION.load(configFile);
-                Logger.verbose("Config file does not exist, creating...");
+                Logger.verbose("Config file does not exist, creating");
             }
             
             if (!created)
@@ -83,7 +84,7 @@ public class Origami extends JavaPlugin implements UnitTestable
             LOADED_CONFIGURATION = DEFAULT_CONFIG;
         }
 
-        Logger.verbose("Verifying config...");
+        Logger.verbose("Verifying config");
         Logger.verbose("Looking for missing keys [1/2]");
         for (String key : DEFAULT_CONFIG.getKeys(true))
         {
@@ -103,7 +104,12 @@ public class Origami extends JavaPlugin implements UnitTestable
             Logger.verbose("§e - Unused key: " + key + "(value: " + LOADED_CONFIGURATION.get(key) + ")");
         }
 
-        METADATA.load(new InputStreamReader(JarUtils.toInputStream(this.getJarFile(), "meta.yml")));
+        try {
+            METADATA.load(new InputStreamReader(JarUtils.toInputStream(this.getJarFile(), "meta/meta.yml")));
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+            METADATA = YamlUtils.of("version", "unknown", "type", "unknown");
+        }
 
         Logger.log("Loading Origami " + METADATA.getString("version"));
 
@@ -113,16 +119,51 @@ public class Origami extends JavaPlugin implements UnitTestable
             e.printStackTrace();
         }
 
+        if (ACTIVE_MODULE_MANAGER == null)
+        {
+            Logger.log("§cFailed to load module manager. Cannot load modules");
+            return;
+        }
+
+        Logger.todo("Load command manager");
+
+        File[] presentModuleFiles = new File("Origami/modules/").listFiles();
+
+        for (File modFile : presentModuleFiles)
+        {
+            if (!modFile.getName().endsWith(".jar"))
+            {
+                continue;
+            }
+
+            try {
+                ACTIVE_MODULE_MANAGER.loadModule(modFile);
+                continue;
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (OrigamiModuleException e) {
+                e.printStackTrace();
+            }
+            Logger.log("§cFailed to load module file " + modFile.getName());
+        }
+
         Logger.verbose("Loading complete");
         Logger.log("Loaded in " + (System.currentTimeMillis() - currentTime) + " ms");
 
         // Loading complete
 
-        if (LOADED_CONFIGURATION.getBoolean("performUnitTests"))
-        {
-            UnitTestManager.performUnitTests(true, this, (UnitTestable) ACTIVE_MODULE_MANAGER);
+        try {
+            if (LOADED_CONFIGURATION.getBoolean("performUnitTests"))
+            {
+                UnitTestManager.performUnitTests(true, this);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     @Override
@@ -207,6 +248,8 @@ public class Origami extends JavaPlugin implements UnitTestable
     /**
      * Obtains Bukkit's classloader used to load Origami. In most cases, this should be an instance of final package-private class {@link org.bukkit.plugin.java.PluginClassLoader}
      * @return Classloader used to load Origami
+     * 
+     * @since 1.0.0
      */
     public static ClassLoader getClassloader()
     {
@@ -236,20 +279,20 @@ public class Origami extends JavaPlugin implements UnitTestable
     {
         Logger.log("Saving config");
 
-        File configFile = new File("./plugins/Origami/origami.yml");
+        File configFile = new File("origami.yml");
 
         try {
             if (!configFile.exists())
             {
                 DEFAULT_CONFIG.save(configFile);
-                Logger.verbose("Config file does not exist, creating...");
+                Logger.verbose("Config file does not exist, creating");
                 return;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Logger.verbose("Checking for changes on disk...");
+        Logger.verbose("Checking for changes on disk");
 
         YamlConfiguration localConfig = new YamlConfiguration();
         
@@ -277,7 +320,7 @@ public class Origami extends JavaPlugin implements UnitTestable
 
         completedTests.add(new UnitTestResult(INSTANCE != null, "Null plugin instance", (INSTANCE != null ? null : "Origami static instance not set"), this));
 
-        File origamiConfigFile = new File("./plugins/Origami/origami.yml");
+        File origamiConfigFile = new File("origami.yml");
         completedTests.add(new UnitTestResult(origamiConfigFile.exists(), "Main config exists", (origamiConfigFile.exists() ? null : "Main config file does not exist on disk"), this));
 
         // TODO Write more tests

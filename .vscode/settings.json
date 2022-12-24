@@ -2,8 +2,12 @@
     "java.project.sourcePaths": [
         "src",
         "precipice",
-        "includedTests/moduleprovider"
+        "includedTests/moduleprovider",
+        "test"
     ],
+    "files.exclude": {
+        "**/bin/": true,
+    },
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar"

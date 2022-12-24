@@ -3,6 +3,7 @@ package coffee.khyonieheart.craftorigami.command;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ import coffee.khyonieheart.origami.util.marker.Nullable;
 public class OrigamiCommandManager implements CommandManager
 {
     private CommandMap activeCommandMap;
-    private Map<String, OrigamiCommand> registeredCommands;
+    private Map<String, OrigamiCommand> registeredCommands = new HashMap<>();
 
     @Override
     public void register(String name, OrigamiCommand command, Server server) 
@@ -34,7 +35,7 @@ public class OrigamiCommandManager implements CommandManager
             Logger.verbose("No command map has been set, attempting to cache off of server \"" + (server == null ? "null" : server.getClass().getName() + "\""));
             if (server == null)
             {
-                Logger.verbose("§cCommand \"" + name + "\" (class: " + (command == null ? "null" : command.getClass().getName()) + ") attempted to register with a null server before command map has been cached! Using Bukkit.getServer() as fallback...");
+                Logger.verbose("§cCommand \"" + name + "\" (class: " + (command == null ? "null" : command.getClass().getName()) + ") attempted to register with a null server before command map has been cached! Using Bukkit.getServer() as fallback");
                 server = Bukkit.getServer();
             }
 
@@ -60,7 +61,7 @@ public class OrigamiCommandManager implements CommandManager
 
         activeCommandMap.register(name, command);
 
-        Logger.verbose("§9Successfully registered command \"/" + name + "\" with " + command.getAliases().size() + " " + Grammar.plural(command.getAliases().size(), "alias", "aliases"));
+        Logger.verbose("§aSuccessfully registered command \"/" + name + "\" with " + command.getAliases().size() + " " + Grammar.plural(command.getAliases().size(), "alias", "aliases"));
     }
 
     @Override

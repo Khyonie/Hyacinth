@@ -27,7 +27,7 @@ public class UnitTestManager
             index++;
             if (testable == null)
             {
-                Logger.log("§cUnit test invokation supplied null instance at index " + index + "! Skipping...");
+                Logger.log("§cUnit test invokation supplied null instance at index " + index + "! Skipping");
                 continue;
             }
 

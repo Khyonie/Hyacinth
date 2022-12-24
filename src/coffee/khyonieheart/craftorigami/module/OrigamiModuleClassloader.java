@@ -136,6 +136,6 @@ public class OrigamiModuleClassloader extends URLClassLoader
         if (jar == null)
             throw new IllegalArgumentException("JarFile cannot be null");
 
-        return new OrigamiModuleClassloader(file, jar, file.getClass().getClassLoader());
+        return new OrigamiModuleClassloader(file, jar, Origami.getClassloader());
     }
 }

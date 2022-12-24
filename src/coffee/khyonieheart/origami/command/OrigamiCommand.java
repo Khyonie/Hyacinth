@@ -7,7 +7,9 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import coffee.khyonieheart.origami.Logger;
 import coffee.khyonieheart.origami.Message;
+import coffee.khyonieheart.origami.print.Arrays;
 import coffee.khyonieheart.origami.util.marker.NotEmpty;
 import coffee.khyonieheart.origami.util.marker.NotNull;
 import coffee.khyonieheart.origami.util.marker.Nullable;
@@ -36,13 +38,16 @@ public abstract class OrigamiCommand extends Command implements IOrigamiCommand
         Method commandMethod;
 
         try {
-            commandMethod = this.getClass().getMethod(prefix + args[0].toLowerCase(), String.class, String[].class);
+            commandMethod = this.getClass().getMethod(prefix + (args.length == 0 ? commandLabel : args[0]).toLowerCase(), CommandSender.class, String[].class);
             
             commandMethod.invoke(this, sender, args);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (NoSuchMethodException e) {
+            Message.send(sender, "§cNo such command \"/" + (args.length == 0 ? commandLabel : commandLabel + " " + args[0]).toLowerCase() + "\"");
+        } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         } catch (Exception e) {
             Message.send(sender, "§cCommand failed to execute.");
+            e.printStackTrace();
         }
 
         return true;

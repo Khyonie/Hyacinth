@@ -1,8 +1,5 @@
-name: Precipice
-entry: coffee.khyonieheart.precipice.Precipice
-description: Example classloader.
+name: OrigamiTest
+description: Test module
+entry: coffee.khyonieheart.origami.testing.TestModule
 version: 1.0.0
 author: Khyonie#2082
-
-icons: LIME_CONCRETE
-family: ExampleModules

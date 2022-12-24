@@ -13,30 +13,27 @@ import coffee.khyonieheart.origami.util.marker.NotNull;
 
 public class YamlUtils 
 {
-    public static YamlConfiguration ofDefault(Object... defaults) throws IllegalArgumentException
+    public static YamlConfiguration of(Object... data) throws IllegalArgumentException
     {
         YamlConfiguration config = new YamlConfiguration();
 
         // Sanity check
-        if (defaults.length == 0)
+        if (data.length == 0)
             return config;
 
-        if (defaults.length % 2 != 0)
-            throw new IllegalArgumentException("YAML defaults must have an even number of inputs (received " + defaults.length + ")");
+        if (data.length % 2 != 0)
+            throw new IllegalArgumentException("YAML data must have an even number of inputs (received " + data.length + ")");
 
         // Build config
-        for (int i = 0; i < defaults.length; i++)
+        for (int i = 0; i < data.length; i++)
         {
-            if (i >= defaults.length) // Just in case
-                break;
-
-            if (defaults[i] instanceof String)
+            if (data[i] instanceof String)
             {
-                config.set((String) defaults[i], defaults[++i]);
+                config.set((String) data[i], data[++i]);
                 continue;
             }
 
-            throw new IllegalArgumentException("YAML default keys must all be of type java.lang.String (key at index " + i + " is of " + defaults[i].getClass().getName() + ")");
+            throw new IllegalArgumentException("YAML configuration keys must all be of type java.lang.String (key at index " + i + " is of " + (data[i] == null ? "null" : data[i].getClass().getName()) + ")");
         }
 
         return config;
