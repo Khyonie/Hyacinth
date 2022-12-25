@@ -7,9 +7,7 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import coffee.khyonieheart.origami.Logger;
 import coffee.khyonieheart.origami.Message;
-import coffee.khyonieheart.origami.print.Arrays;
 import coffee.khyonieheart.origami.util.marker.NotEmpty;
 import coffee.khyonieheart.origami.util.marker.NotNull;
 import coffee.khyonieheart.origami.util.marker.Nullable;

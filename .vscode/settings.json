@@ -1,9 +1,8 @@
 {
     "java.project.sourcePaths": [
-        "src",
-        "precipice",
         "includedTests/moduleprovider",
-        "test"
+        "origami",
+        "debugmodule"
     ],
     "files.exclude": {
         "**/bin/": true,

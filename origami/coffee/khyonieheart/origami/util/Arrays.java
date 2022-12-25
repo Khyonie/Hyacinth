@@ -1,5 +1,6 @@
-package coffee.khyonieheart.origami.print;
+package coffee.khyonieheart.origami.util;
 
+import java.util.Iterator;
 import java.util.function.Function;
 
 import coffee.khyonieheart.origami.util.marker.NotNull;
@@ -28,21 +29,27 @@ public class Arrays
 
         StringBuilder builder = new StringBuilder();
 
-        for (int i = 0; i < array.length; i++)
+        ArrayIterator<T> iter = ArrayIterator.create(array, 0);
+        while (iter.hasNext())
         {
             try {
-                builder.append(mapper != null ? mapper.apply(array[i]) : array[i]);
+                builder.append(mapper != null ? mapper.apply(iter.next()) : iter.next());
             } catch (Exception e) {
-                builder.append("--- EXCEPTION THROWN @ INDEX " + i + " ---");
+                builder.append("--- EXCEPTION THROWN @ INDEX " + iter.getIndex() + " ---");
                 e.printStackTrace();
             }
 
-            if (i + 1 != array.length)
+            if (iter.hasNext())
             {
                 builder.append(delimeter);
             }
         }
 
         return builder.toString();
+    }
+
+    public static <T> ArrayIterator iterator(T[] data, int startingIndex)
+    {
+        return new ArrayIterator<T>(data, startingIndex);
     }
 }
