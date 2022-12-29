@@ -6,6 +6,9 @@
     ],
     "files.exclude": {
         "**/bin/": true,
+        "**/.gradle/": true,
+        "**/.doc/": true,
+        "pom.xml": true,
     },
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
