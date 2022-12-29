@@ -1,5 +1,11 @@
 package coffee.khyonieheart.origami;
 
+/**
+ * Various utilities related to logging.
+ * 
+ * @author Khyonie
+ * @since 1.0.0
+ */
 public class Logger 
 {
     public static void log(String message)

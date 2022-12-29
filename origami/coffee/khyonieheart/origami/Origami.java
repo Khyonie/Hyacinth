@@ -41,7 +41,7 @@ public class Origami extends JavaPlugin implements UnitTestable
         "disallowMultipleInnerModuleClasses", false,
         "enableVerboseLogging", false,
         "performUnitTests", false,
-        "consoleColorCodes", "windows", // Either "windows" or "unix"
+        "deleteUnusedKeys", true,
         "regularLoggingFlavor", "§9Origami §8> §7LOGGING §8> §7",
         "verboseLoggingFlavor", "§9Origami §8> §eVERBOSE §8> §7"
     );
@@ -102,6 +102,18 @@ public class Origami extends JavaPlugin implements UnitTestable
                 continue;
 
             Logger.verbose("§e - Unused key: " + key + "(value: " + LOADED_CONFIGURATION.get(key) + ")");
+
+            if (LOADED_CONFIGURATION.getBoolean("deleteUnusedKeys"))
+            {
+                Logger.verbose("§e - Deleting unused key " + key);
+                LOADED_CONFIGURATION.set(key, null);
+            }
+        }
+
+        try {
+            LOADED_CONFIGURATION.save(configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         try {
