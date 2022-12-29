@@ -9,8 +9,8 @@ package coffee.khyonieheart.origami.result;
  * To use a result, call either static method <code>Result.ok(Object contained)</code> or <code>Result.err(Object error)</code>.<p>
  * 
  * To obtain the contained value, call {@code .unwrapOk(Class<? extends T> clazz)} or {@code .unwrapErr(Class<? extends T> clazz)} where T is the class to unwrap the result into.
- * If the result is in a state of Err, unwrapping into an Ok will throw an UnwrapException, and likewise unwrapping a result of Ok into an Err
- * will also throw an UnwrapException.
+ * If the result is in a state of Err, unwrapping into an Ok will throw an UnsupportedOperationException, and likewise unwrapping a result of Ok into an Err
+ * will also throw an UnsupportedOperationException.
  */
 public interface Result 
 {
@@ -19,7 +19,7 @@ public interface Result
      * @param <T> Type of contained Ok value
      * @param clazz Class of contained Ok value
      * @return Contained value of Ok
-     * @throws UnwrapException When this result is a state of Err
+     * @throws UnsupportedOperationException When this result is a state of Err
      */
     public <T> T unwrapOk(Class<? extends T> clazz);
 
@@ -28,7 +28,7 @@ public interface Result
      * @param <T> Type of contained Err value
      * @param clazz Class of contained Err value
      * @return Contained value of Err
-     * @throws UnwrapException When this result is a state of Ok
+     * @throws UnsupportedOperationException When this result is a state of Ok
      */
     public <T> T unwrapErr(Class<? extends T> clazz);
 

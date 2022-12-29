@@ -14,6 +14,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import coffee.khyonieheart.origami.util.marker.NotEmpty;
 import coffee.khyonieheart.origami.util.marker.NotNull;
 
+/**
+ * Collection of various utilities for creating and checking .yaml configurations.
+ * 
+ * @author Khyonie
+ * @since 1.0.0
+ */
 public class YamlUtils 
 {
     public static YamlConfiguration of(Object... data) throws IllegalArgumentException
@@ -42,6 +48,12 @@ public class YamlUtils
         return config;
     }   
 
+    /**
+     * Checks a given configuration to ensure it contains all the given keys.
+     * @param configuration Configuration to check.
+     * @param keys Not empty array of keys.
+     * @return Whether the given configuration has all the keys given.
+     */
     public static boolean containsAll(
         @NotNull YamlConfiguration configuration,
         @NotEmpty String... keys
@@ -59,6 +71,13 @@ public class YamlUtils
         return true;
     }
 
+    /**
+     * Obtains a list of keys missing from the given configuration. May be empty.
+     * @param configuration Configuration to check.
+     * @param keys List of keys to check.
+     * @return List of keys missing from the configuration.
+     */
+    @NotNull
     public static List<String> getMissingKeys(
         @NotNull YamlConfiguration configuration,
         @NotEmpty String... keys
@@ -72,10 +91,9 @@ public class YamlUtils
     
     /**
      * Attempts to merge two configurations with similar, if not same defaults, storing the result in configuration A.
-     * @param configA
-     * @param configB
-     * @param preferB
-     * @return
+     * @param configA First configuration.
+     * @param configB Second configuration.
+     * @return A collection of differing keys and values.
      */
     public static Map<String, Object> mergeConfigs(YamlConfiguration configA, YamlConfiguration configB)
     {
@@ -100,6 +118,13 @@ public class YamlUtils
         return rewrittenKeys;
     }
 
+    /**
+     * Loads a YAML configuration from a jar entry.
+     * @param jar Jar to load from
+     * @param filepathInJar Jar entry path.
+     * @return A YAML configuration from the interior of the given jar.
+     * @throws IOException YAML configuration could not be loaded.
+     */
     public static YamlConfiguration yamlFromJar(JarFile jar, String filepathInJar) throws IOException
     {
         return YamlConfiguration.loadConfiguration(new InputStreamReader(JarUtils.toInputStream(null, filepathInJar))); 

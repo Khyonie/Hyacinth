@@ -48,7 +48,7 @@ public class Reflect
      * @return An object of type T
      * @throws InstantiationRuntimeException Thrown when another exception is thrown.
      * 
-     * @see {@link #simpleInstantiate(Class, Object...)} for a simpler version of this method.
+     * @see Reflect#simpleInstantiate(Class, Object...)
      */
     public static <T> T simpleInstantiate(
         @NotNull Class<T> clazz,

@@ -186,7 +186,7 @@ public class Origami extends JavaPlugin implements UnitTestable
 
     /**
      * Obtains the current module manager in use.
-     * @return A module manager
+     * @return A module manager.
      * 
      * @since 1.0.0
      */
@@ -197,7 +197,7 @@ public class Origami extends JavaPlugin implements UnitTestable
 
     /**
      * Obtains the current command manager in use.
-     * @return A command manager
+     * @return A command manager.
      * 
      * @since 1.0.0
      */
@@ -208,7 +208,7 @@ public class Origami extends JavaPlugin implements UnitTestable
 
     /**
      * Obtains Origami's current instance.
-     * @return Origami instance
+     * @return Origami instance.
      * 
      * @since 1.0.0
      */
@@ -219,9 +219,9 @@ public class Origami extends JavaPlugin implements UnitTestable
 
     /**
      * Obtains a value in the Origami main config.
-     * @param key Key to value
+     * @param key Key to value.
      * @param objType Class of object to expect. May return null if value is incompatible with provided type, see {@link #getConfig(String)}
-     * @return A value from configuration in memory
+     * @return A value from configuration in memory.
      * 
      * @since 1.0.0
      */
@@ -245,8 +245,8 @@ public class Origami extends JavaPlugin implements UnitTestable
 
     /**
      * Obtains an object in the Origami main config. This method does not perform any automatic casting. For the automatic cast version of this method, see {@link #getConfig(String, Class)} 
-     * @param key
-     * @return 
+     * @param key String key to obtain config value.
+     * @return A value from configuration in memory.
      * 
      * @since 1.0.0
      */
@@ -259,7 +259,7 @@ public class Origami extends JavaPlugin implements UnitTestable
 
     /**
      * Obtains Bukkit's classloader used to load Origami. In most cases, this should be an instance of final package-private class {@link org.bukkit.plugin.java.PluginClassLoader}
-     * @return Classloader used to load Origami
+     * @return Classloader used to load Origami.
      * 
      * @since 1.0.0
      */
@@ -269,6 +269,11 @@ public class Origami extends JavaPlugin implements UnitTestable
     }
 
     private static JarFile CACHED_JAR;
+
+    /**
+     * Obtains the jar file loaded by Bukkit to load this plugin.
+     * @return Origami jar file.
+     */
     public JarFile getJarFile()
     {
         if (CACHED_JAR == null)

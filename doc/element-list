@@ -1,0 +1,17 @@
+coffee.khyonieheart.craftorigami.command
+coffee.khyonieheart.craftorigami.event
+coffee.khyonieheart.craftorigami.module
+coffee.khyonieheart.craftorigami.module.provider
+coffee.khyonieheart.origami
+coffee.khyonieheart.origami.command
+coffee.khyonieheart.origami.exception
+coffee.khyonieheart.origami.module
+coffee.khyonieheart.origami.module.marker
+coffee.khyonieheart.origami.module.provider
+coffee.khyonieheart.origami.option
+coffee.khyonieheart.origami.print
+coffee.khyonieheart.origami.result
+coffee.khyonieheart.origami.testing
+coffee.khyonieheart.origami.util
+coffee.khyonieheart.origami.util.color
+coffee.khyonieheart.origami.util.marker

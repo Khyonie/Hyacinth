@@ -1,11 +1,14 @@
 package coffee.khyonieheart.origami.util.color;
 
+/**
+ * Utility that maps colors. On paper servers this utility does nothing.
+ */
 public class ColorMapper 
 {
     /**
      * Converts a minecraft color code into an ANSI color escape code.
-     * @param colorCode
-     * @return
+     * @param colorCode Minecraft color code, either with § or not.
+     * @return ANSI color escape code.
      */
     public static String toUnixColor(String colorCode)
     {
@@ -40,6 +43,11 @@ public class ColorMapper
         };
     }  
 
+    /**
+     * Obtains an ANSI 256 color escape code given an ID.
+     * @param id Color ID.
+     * @return ANSI 256 color escape code.
+     */
     public static String to256Color(int id)
     {
         return "\u001B[38;5;" + id + "m";

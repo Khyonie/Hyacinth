@@ -47,7 +47,7 @@ public class Folders
      * @param folders Not-null, not-empty array of folders to be created 
      * @return List of created directories
      * @implNote Already created directories are not added to the list.
-     * @throws IllegalStateException
+     * @throws IllegalStateException One or more directories failed to be created.
      * 
      * @since 1.0.0
      */

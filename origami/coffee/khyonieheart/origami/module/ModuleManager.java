@@ -51,9 +51,9 @@ public interface ModuleManager
      * Obtains a module manager instance from a provider source.
      * @param sourcePath Provider source path (<Source>/<Fully qualified class>, where "Source" translates to file <Source>.jar inside providers/modules/)
      * // TODO Fix broken comment format
-     * @return
-     * @throws FileNotFoundException
-     * @throws OrigamiModuleException
+     * @return A module manager.
+     * @throws FileNotFoundException Provider file does not exist.
+     * @throws OrigamiModuleException Provider failed to be loaded or is in an invalid format.
      */
     public static ModuleManager obtainModuleManager(
         @NotNull String sourcePath

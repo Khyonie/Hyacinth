@@ -1,6 +1,5 @@
 package coffee.khyonieheart.origami.util;
 
-import java.util.Iterator;
 import java.util.function.Function;
 
 import coffee.khyonieheart.origami.util.marker.NotNull;
@@ -13,7 +12,7 @@ public class Arrays
      * otherwise normal Java {@code toString()} will be used.
      * @param <T> Type of array
      * @param array Array to format
-     * @param delimeter String to seperate individual objects in array
+     * @param delimeter String to separate individual objects in array
      * @param mapper Optional 
      * @return String-formatted array
      */
@@ -48,7 +47,7 @@ public class Arrays
         return builder.toString();
     }
 
-    public static <T> ArrayIterator iterator(T[] data, int startingIndex)
+    public static <T> ArrayIterator<T> iterator(T[] data, int startingIndex)
     {
         return new ArrayIterator<T>(data, startingIndex);
     }
