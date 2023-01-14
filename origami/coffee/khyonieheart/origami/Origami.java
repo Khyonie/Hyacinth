@@ -40,6 +40,7 @@ public class Origami extends JavaPlugin implements UnitTestable
         "preferDiskConfigChanges", true, // If config was changed on disk, prefer those changes over the config in memory
         "disallowMultipleInnerModuleClasses", false,
         "enableVerboseLogging", false,
+        "enableModules", false,
         "performUnitTests", false,
         "deleteUnusedKeys", true,
         "regularLoggingFlavor", "§9Origami §8> §7LOGGING §8> §7",
@@ -47,6 +48,7 @@ public class Origami extends JavaPlugin implements UnitTestable
     );
 
     private static Origami INSTANCE;
+    private static boolean LIBRARY_MODE = true;
     private static ModuleManager ACTIVE_MODULE_MANAGER;
     private static CommandManager ACTIVE_COMMAND_MANAGER = new OrigamiCommandManager(); // TODO This
 
@@ -63,6 +65,7 @@ public class Origami extends JavaPlugin implements UnitTestable
         Folders.ensureFolders("./Origami", "providers/commands", "providers/modules", "modules");
 
         File configFile = new File("origami.yml");
+        boolean firstStart = false;
 
         try {
             boolean created = false;
@@ -71,7 +74,8 @@ public class Origami extends JavaPlugin implements UnitTestable
             {
                 DEFAULT_CONFIG.save(configFile);
                 LOADED_CONFIGURATION.load(configFile);
-                Logger.verbose("Config file does not exist, creating");
+                Logger.verbose("Config file does not exist, creating and assuming this is a first start");
+                firstStart = true;
             }
             
             if (!created)
@@ -115,12 +119,39 @@ public class Origami extends JavaPlugin implements UnitTestable
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
         try {
             METADATA.load(new InputStreamReader(JarUtils.toInputStream(this.getJarFile(), "meta/meta.yml")));
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
             METADATA = YamlUtils.of("version", "unknown", "type", "unknown");
+        }
+
+        // Decide library mode
+        if ((System.getProperty("origamiFirstStartInModuleMode") != null && firstStart) || LOADED_CONFIGURATION.getBoolean("enableModules")) // Added as -DorigamiFirstStartInModuleMode to launch options
+        {
+            LIBRARY_MODE = false;
+
+            if (firstStart)
+            {
+                Logger.log("§eStarting Origami's first-time setup with support for modules");
+                LOADED_CONFIGURATION.set("enableModules", true);
+                try {
+                    LOADED_CONFIGURATION.save(configFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (!LOADED_CONFIGURATION.getBoolean("enableModules") && LIBRARY_MODE == true)
+        {
+            if (firstStart)
+            {
+                Logger.log("§eEnabled Origami in library-only mode. Modules, libraries, and providers made for Origami will not be loaded.");
+                Logger.log("§e - If \"module\" mode is desired, edit \"enableModules\" in origami.yml to true");
+            }
+            return;
         }
 
         Logger.log("Loading Origami " + METADATA.getString("version"));
