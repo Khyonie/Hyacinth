@@ -1,0 +1,6 @@
+name:Hyacinth
+source:hyacinth
+secondarysource:
+output: ~/Servers/DevServer/1193/plugins/Hyacinth.jar
+classpath:lib/spigot-1.19.2-R0.1-SNAPSHOT.jar:lib/spigot-api-1.19.2-R0.1-SNAPSHOT-shaded.jar
+input:plugin.yml,meta/meta.yml

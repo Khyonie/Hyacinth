@@ -1,6 +1,6 @@
-name:OrigamiTesting
+name:HyacinthTesting
 source:includedTests/moduleprovider
 secondarysource:src
-output:~/Servers/DevServer/1192/Origami/providers/modules/OrigamiTester.jar
+output:~/Servers/DevServer/1192/Hyacinth/providers/modules/HyacinthTester.jar
 classpath:lib/spigot-1.19.2-R0.1-SNAPSHOT.jar:lib/spigot-api-1.19.2-R0.1-SNAPSHOT-shaded.jar
 input:provider.yml

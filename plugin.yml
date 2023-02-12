@@ -1,6 +1,6 @@
-main: coffee.khyonieheart.origami.Origami
-name: Origami
+main: coffee.khyonieheart.hyacinth.Hyacinth
+name: Hyacinth
 version: 1.0.0
 description: Plugin API which runs on top of Bukkit.
 api-version: 1.17
-author: Khyonie#2082 
+author: Khyonie#2082

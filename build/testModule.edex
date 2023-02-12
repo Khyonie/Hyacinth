@@ -1,6 +1,6 @@
-name:OrigamiModule
+name:HyacinthModule
 source:debugmodule
-secondarysource:origami
-output: ~/Servers/DevServer/1192/Origami/modules/TestModule.jar
+secondarysource:hyacinth
+output: ~/Servers/DevServer/1193/Hyacinth/modules/TestModule.jar
 classpath: lib/spigot-1.19.2-R0.1-SNAPSHOT.jar:lib/spigot-api-1.19.2-R0.1-SNAPSHOT-shaded.jar
 input:mod.yml

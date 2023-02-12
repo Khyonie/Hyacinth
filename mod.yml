@@ -1,5 +1,5 @@
-name: OrigamiTest
+name: HyacinthTest
 description: Test module
-entry: coffee.khyonieheart.origami.testing.TestModule
+entry: coffee.khyonieheart.hyacinth.testing.TestModule
 version: 1.0.0
 author: Khyonie#2082
