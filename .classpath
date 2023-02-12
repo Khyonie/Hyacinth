@@ -18,7 +18,7 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="origami"/>
+	<classpathentry kind="src" path="hyacinth"/>
 	<classpathentry kind="lib" path="lib/spigot-1.19.2-R0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/spigot-api-1.19.2-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
