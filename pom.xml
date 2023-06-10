@@ -3,7 +3,7 @@
   <groupId>coffee.khyonieheart.hyacinth</groupId>
   <artifactId>Hyacinth</artifactId>
   <version>1.0.0</version>
-  <name>Precipice</name>
+  <name>Hyacinth</name>
   <description>Hyacinth Bukkit plugin API</description>
   <build>
     <sourceDirectory>debugmodule</sourceDirectory>

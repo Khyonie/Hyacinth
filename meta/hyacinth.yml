@@ -1,0 +1,26 @@
+# Enable module loading.
+enableModules: false
+
+# Functional providers to be loaded to handle specific tasks.
+# A provider must be in Hyacinth provider format (ex. source/fully.qualified.Path) where "source" matches a loaded provider library, and the path points to a class within that library.
+# It's best not to touch these unless you know what you're doing.
+providers:
+  moduleManagerProvider: internal/coffee.khyonieheart.crafthyacinth.module.HyacinthModuleManager
+  commandManagerProvider: internal/coffee.khyonieheart.crafthyacinth.command.HyacinthCommandManager
+
+# If the config is changed on disk while the server is running, preserve those changes in case of a conflict when saving.
+preferDiskConfigChanges: true
+
+# In the case of a module containing multiple module classes and does not specify one in their mod.yml whether to skip loading the module.
+# This can solve some niche loading problems for complex modules.
+disallowMultipleInnerModuleClasses: false
+
+# Perform unit tests on startup.
+performUnitTests: false
+
+# If an unknown key is found in this file, remove it?
+deleteUnusedKeys: true
+
+# Logging flavors. These are used as message prefixes for Hyacinth's default logger.
+regularLoggingFlavor: §9Hyacinth §8> §7LOGGING §8> §7
+verboseLoggingFlavor: §9Hyacinth §8> §eVERBOSE §8> §7

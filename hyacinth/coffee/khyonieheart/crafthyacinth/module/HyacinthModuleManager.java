@@ -7,8 +7,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarFile;
 
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -31,6 +33,7 @@ import coffee.khyonieheart.hyacinth.module.marker.PreventAutoLoad;
 import coffee.khyonieheart.hyacinth.module.provider.Chainloadable;
 import coffee.khyonieheart.hyacinth.option.Option;
 import coffee.khyonieheart.hyacinth.print.Grammar;
+import coffee.khyonieheart.hyacinth.util.Lists;
 import coffee.khyonieheart.hyacinth.util.Reflect;
 import coffee.khyonieheart.hyacinth.util.YamlUtils;
 import coffee.khyonieheart.hyacinth.util.marker.NotNull;
@@ -48,6 +51,8 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
 
     private Map<String, HyacinthModule> loadedModules = new HashMap<>();
 	private Map<HyacinthModule, YamlConfiguration> loadedConfigurations = new HashMap<>();
+
+	private static Set<String> circularDependencies = new HashSet<>();
 
     /**
      * @implNote This implementation may additionally throw an {@link InstantiationRuntimeException}.
@@ -99,6 +104,7 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
         Logger.verbose("Registered new Hyacinth classloader " + moduleFile.getName() + "/" + moduleConfig.getString("name") + " (" + activeClassloaders.size() + " registered)");
 
         // Attempt to load dependencies
+
         if (moduleConfig.contains("requires"))
         {
             Logger.verbose("Handling dependencies of " + moduleFile.getName() + "/" + moduleConfig.getString("name"));
@@ -108,8 +114,6 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
 
             for (String dependency : requires)
             {
-                Logger.todo("Handle circular dependency recursion crash");
-
                 if (dependency.equals(moduleConfig.get("name")))
                 {
                     Logger.verbose("§eModule " + moduleFile.getName() + "/" + moduleConfig.getString("name") + " lists itself as a dependency! Ignoring");
@@ -131,6 +135,12 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
                 }
 
                 try {
+					if (!circularDependencies.add(dependency))
+					{
+						Logger.verbose("Circular dependency containing [" + Lists.toString(new ArrayList<>(circularDependencies), ", ", null) + "], stopping recursion. Ignoring circular dependency.");
+						continue;
+					}
+
                     loadModule(ModuleManager.moduleFileWithName(dependency));
                 } catch (Exception e) {
                     Logger.verbose("§cDependency " + dependency + " of module " + moduleConfig.getName() + " failed to load with exception: " + e.getClass().getSimpleName());

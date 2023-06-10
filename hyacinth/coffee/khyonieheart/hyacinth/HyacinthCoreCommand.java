@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 
 import coffee.khyonieheart.crafthyacinth.command.HyacinthTabCompleter;
 import coffee.khyonieheart.crafthyacinth.command.parser.HyacinthCompletionBranch;
-import coffee.khyonieheart.crafthyacinth.command.parser.validator.CommandValidator;
 import coffee.khyonieheart.crafthyacinth.command.parser.validator.PermissionValidator;
 import coffee.khyonieheart.crafthyacinth.killswitch.KillswitchManager;
 import coffee.khyonieheart.crafthyacinth.module.HyacinthCoreModule;

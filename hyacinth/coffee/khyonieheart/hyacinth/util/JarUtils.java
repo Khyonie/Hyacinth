@@ -4,10 +4,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 import coffee.khyonieheart.hyacinth.util.marker.Nullable;
@@ -48,6 +53,25 @@ public class JarUtils
 
         return target;
     }    
+
+	public static JarFile getPluginJar(String pluginName)
+	{
+		JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(pluginName);
+
+		if (plugin == null)
+		{
+			return null;
+		}
+
+		try {
+			Method getFile = JavaPlugin.class.getDeclaredMethod("getFile");
+			File file = (File) getFile.invoke(plugin);
+			return new JarFile(file);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	/**
 	 * Converts a jar entry to an input stream.

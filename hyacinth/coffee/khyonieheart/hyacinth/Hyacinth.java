@@ -76,6 +76,7 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
             if (!configFile.exists())
             {
                 DEFAULT_CONFIG.save(configFile);
+				JarUtils.extractFromJar(JarUtils.getPluginJar("Hyacinth"), "meta/hyacinth.yml", configFile);
                 loadedConfiguration.load(configFile);
                 Logger.verbose("Config file does not exist, creating and assuming this is a first start");
                 firstStart = true;
