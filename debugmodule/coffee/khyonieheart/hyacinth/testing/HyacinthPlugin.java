@@ -5,7 +5,7 @@ import coffee.khyonieheart.hyacinth.module.HyacinthJavaPlugin;
 public class HyacinthPlugin extends HyacinthJavaPlugin
 {
 	@Override
-	public void onEnable()
+	public void onPluginEnable()
 	{
 
 	}

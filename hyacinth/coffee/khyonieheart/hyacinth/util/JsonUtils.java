@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,6 +28,17 @@ public class JsonUtils
 		.disableHtmlEscaping()
 		.excludeFieldsWithoutExposeAnnotation()
 		.create();
+
+	/**
+	 * Obtains a Gson instance.
+	 *
+	 * @return Gson object
+	 */
+	@NotNull
+	public static Gson getGson()
+	{
+		return gson;
+	}
 
 	/**
 	 * Deserializes an object from a .json file.
@@ -56,6 +68,40 @@ public class JsonUtils
 		try (FileReader reader = new FileReader(file))
 		{
 			return gson.fromJson(reader, type);	
+		} catch (IOException | IllegalStateException | JsonSyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Deserializes an object from a .json file, with support for interface types in java.lang.reflect.Type.
+	 *
+	 * @param <T> Type of object
+	 * @param path Filepath to .json file
+	 * @param type Type of object, see com.google.gson.reflect.TypeToken
+	 *
+	 * @return An object read from the given file. May return null if the file cannot be read.
+	 * @throws FileNotFoundException When a file does not exist at the given path.
+	 *
+	 * @since 1.0.0
+	 */
+	@Nullable
+	public static <T> T fromJson(
+		@NotNull String path,
+		@NotNull Type type
+	)
+		throws FileNotFoundException
+	{
+		File file = new File(path);
+		if (!file.exists())
+		{
+			throw new FileNotFoundException("File \"" + file.getName() + "\" does not exist");
+		}
+
+		try (FileReader reader = new FileReader(file))
+		{
+			return gson.fromJson(reader, type);
 		} catch (IOException | IllegalStateException | JsonSyntaxException e) {
 			e.printStackTrace();
 			return null;

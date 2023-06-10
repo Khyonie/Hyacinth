@@ -3,6 +3,7 @@ package coffee.khyonieheart.hyacinth.module;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -42,12 +43,16 @@ public interface ModuleManager
     /**
      * Attempts to obtain a loaded module instance with the given name.
      * @param moduleName Name of module to obtain.
-     * @eden.optional {@link coffee.khyonieheart.hyacinth.module.HyacinthModule}
+     * @hyacinth.optional {@link coffee.khyonieheart.hyacinth.module.HyacinthModule}
      * @return See optional.
      */
     public Option getModule(String moduleName);
 
+	public List<? extends HyacinthModule> getLoadedModules();
+
 	public void addModule(HyacinthModule module, YamlConfiguration configuration);
+
+	public YamlConfiguration getConfiguration(HyacinthModule module);
 
     public Class<?> getGlobalClass(String name, ClassLoader accessor);
 

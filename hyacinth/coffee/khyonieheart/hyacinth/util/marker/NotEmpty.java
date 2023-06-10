@@ -1,6 +1,9 @@
 package coffee.khyonieheart.hyacinth.util.marker;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
@@ -30,4 +33,6 @@ import java.lang.annotation.Target;
  * @see {@link NotNull}, {@link Nullable}, {@link NoExceptions}
  */
 @Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.CLASS)
+@Documented
 public @interface NotEmpty {}

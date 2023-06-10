@@ -60,7 +60,7 @@ public class ArrayIterator<T> implements Iterator<T>
     @Override
     public boolean hasNext() 
     {
-        return (index + 1) < data.length;
+        return index < data.length;
     }
 
 	/**

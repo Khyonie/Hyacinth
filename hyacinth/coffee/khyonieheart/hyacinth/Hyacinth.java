@@ -15,9 +15,9 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import coffee.khyonieheart.crafthyacinth.command.HyacinthCommandManager;
 import coffee.khyonieheart.crafthyacinth.module.HyacinthCoreModule;
+import coffee.khyonieheart.hibiscus.Hibiscus;
 import coffee.khyonieheart.hyacinth.command.CommandManager;
 import coffee.khyonieheart.hyacinth.exception.HyacinthModuleException;
-import coffee.khyonieheart.hyacinth.module.HyacinthModule;
 import coffee.khyonieheart.hyacinth.module.ModuleManager;
 import coffee.khyonieheart.hyacinth.testing.TestIdentifier;
 import coffee.khyonieheart.hyacinth.testing.UnitTestManager;
@@ -171,13 +171,20 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
 			{
 				throw new HyacinthModuleException();
 			}
+
+			Logger.verbose("Loaded command manager");
 		} catch (FileNotFoundException | HyacinthModuleException e) {
 			e.printStackTrace();
 			Logger.log("§cFailed to load command manager. Cannot register commands.");
 			return;
 		}
 
-		activeModuleManager.addModule(new HyacinthCoreModule(), HyacinthCoreModule.getConfiguration());
+		// Internal hyacinth module
+		HyacinthCoreModule hyacinth = new HyacinthCoreModule();
+		activeModuleManager.addModule(hyacinth, HyacinthCoreModule.getConfiguration());
+
+		Hibiscus hibiscus = new Hibiscus();
+		activeModuleManager.addModule(hibiscus, Hibiscus.getConfiguration());
 
         if (!loadedConfiguration.getBoolean("enableModules") && libraryMode == true)
         {
@@ -217,6 +224,8 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
             Logger.log("§cFailed to load module file " + modFile.getName());
         }
 
+		activeModuleManager.getLoadedModules().forEach(mod -> mod.onEnable());
+
         Logger.verbose("Loading complete");
         Logger.log("Loaded in " + (System.currentTimeMillis() - currentTime) + " ms");
 
@@ -236,6 +245,8 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
     public void onDisable()
     {
         saveHyacinthConfig();
+
+		activeModuleManager.getLoadedModules().forEach(mod -> mod.onDisable());
     } 
 
 	/**

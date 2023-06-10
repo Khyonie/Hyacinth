@@ -18,6 +18,12 @@ import coffee.khyonieheart.hyacinth.command.HyacinthCommand;
 import coffee.khyonieheart.hyacinth.print.Grammar;
 import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
+/**
+ * Internal implementation of a command manager.
+ *
+ * @author Khyonie
+ * @since 1.0.0
+ */
 public class HyacinthCommandManager implements CommandManager
 {
     private CommandMap activeCommandMap;

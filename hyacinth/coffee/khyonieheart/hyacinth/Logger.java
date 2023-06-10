@@ -8,8 +8,6 @@ package coffee.khyonieheart.hyacinth;
  */
 public class Logger 
 {
-	// TODO Add persistent logs
-
 	/**
 	 * Prints a message in the console and adds it to the log.
 	 *

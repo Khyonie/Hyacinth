@@ -1,6 +1,11 @@
 package coffee.khyonieheart.hyacinth.module;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import coffee.khyonieheart.hyacinth.Hyacinth;
+import coffee.khyonieheart.hyacinth.util.Arrays;
+import coffee.khyonieheart.hyacinth.util.YamlUtils;
 
 /**
  * Bridge between Hyacinth modules and Bukkit plugins.
@@ -10,11 +15,19 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public abstract class HyacinthJavaPlugin extends JavaPlugin implements HyacinthModule
 {
+	private YamlConfiguration config;
+
 	@Override
 	public void onEnable()
 	{
-		super.onEnable();
+		// Register self
+		this.config = this.buildHyacinthConfig();
+		Hyacinth.getModuleManager().addModule(this, this.config);
+
+		this.onPluginEnable();
 	}
+
+	public abstract void onPluginEnable();
 
 	public JavaPlugin asJavaPlugin()
 	{
@@ -24,5 +37,16 @@ public abstract class HyacinthJavaPlugin extends JavaPlugin implements HyacinthM
 	public HyacinthModule asHyacinthModule()
 	{
 		return this;
+	}
+
+	private YamlConfiguration buildHyacinthConfig()
+	{
+		return YamlUtils.of(
+			"name", this.getDescription().getName(),
+			"version", this.getDescription().getVersion(),
+			"entry", this.getDescription().getMain(),
+			"description", this.getDescription().getDescription() == null ? "(No description specified)" : this.getDescription().getDescription(),
+			"author", this.getDescription().getAuthors().isEmpty() ? "(No author(s) specified)" : Arrays.toString(Arrays.toArray(String[].class, this.getDescription().getAuthors()), ", ", null)
+		);
 	}
 }

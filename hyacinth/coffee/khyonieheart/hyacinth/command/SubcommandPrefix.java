@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Annotation that allows adding a prefix to all subcommands contained in this class.
  * 
  *<pre><code>
-class NormalPrefixedCommand extends OrigamiCommand {
+class NormalPrefixedCommand extends HyacinthCommand {
     // - Snip constructors and required methods -  
     public void example(CommandSender sender, String[] args)
     {
@@ -19,7 +19,7 @@ class NormalPrefixedCommand extends OrigamiCommand {
  *</code> 
  *<code>
 &#64;SubcommandPrefix("subcommand_")
-class CustomPrefixedCommand extends OrigamiCommand {
+class CustomPrefixedCommand extends HyacinthCommand {
     // - Snip constructors and required methods
     public void subcommand_example(CommandSender sender, String[] args)
     {
@@ -35,5 +35,6 @@ class CustomPrefixedCommand extends OrigamiCommand {
 @Target({ ElementType.TYPE })
 public @interface SubcommandPrefix 
 {
+	/** Prefix for subcommands */
     public String value(); 
 }

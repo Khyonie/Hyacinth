@@ -16,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 
 import coffee.khyonieheart.crafthyacinth.event.HyacinthListenerManager;
+import coffee.khyonieheart.crafthyacinth.killswitch.KillswitchManager;
 import coffee.khyonieheart.hyacinth.Hyacinth;
 import coffee.khyonieheart.hyacinth.Logger;
 import coffee.khyonieheart.hyacinth.command.HyacinthCommand;
@@ -23,6 +24,7 @@ import coffee.khyonieheart.hyacinth.exception.DependenciesNotMetException;
 import coffee.khyonieheart.hyacinth.exception.HyacinthModuleException;
 import coffee.khyonieheart.hyacinth.exception.InstantiationRuntimeException;
 import coffee.khyonieheart.hyacinth.exception.InvalidModuleClassException;
+import coffee.khyonieheart.hyacinth.killswitch.KillswitchTarget;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
 import coffee.khyonieheart.hyacinth.module.ModuleManager;
 import coffee.khyonieheart.hyacinth.module.marker.PreventAutoLoad;
@@ -34,7 +36,7 @@ import coffee.khyonieheart.hyacinth.util.YamlUtils;
 import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
- * Official implementation of a module manager.
+ * Internal implementation of a module manager.
  * 
  * @author Khyonie
  * @since 1.0.0
@@ -45,11 +47,13 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
     private Map<String, Class<?>> cachedClasses = new HashMap<>();
 
     private Map<String, HyacinthModule> loadedModules = new HashMap<>();
+	private Map<HyacinthModule, YamlConfiguration> loadedConfigurations = new HashMap<>();
 
     /**
      * @implNote This implementation may additionally throw an {@link InstantiationRuntimeException}.
      */
     @Override
+	@SuppressWarnings("unchecked")
     public HyacinthModule loadModule(@NotNull File moduleFile) throws IllegalArgumentException, FileNotFoundException, IOException, HyacinthModuleException
     {
         if (moduleFile == null)
@@ -80,6 +84,12 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
         }
 
         Logger.verbose(moduleFile.getName() + "'s mod.yml passed verification");
+
+		if (loadedModules.containsKey(moduleConfig.getString("name")))
+		{
+			jar.close();
+			return loadedModules.get(moduleConfig.getString("name"));
+		}
 
         // Assign a classloader, load module
 
@@ -159,7 +169,7 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
 
         // Register
 
-        Map<Class<?>, List<Class<?>>> toRegister = hmcl.collectMultiSubclasses(HyacinthCommand.class, Listener.class);
+        Map<Class<?>, List<Class<?>>> toRegister = hmcl.collectMultiSubclasses(HyacinthCommand.class, Listener.class, KillswitchTarget.class);
         toRegister.forEach((clazz, collected) -> {
             collected.removeIf((collectedClass) -> collectedClass.isAnnotationPresent(PreventAutoLoad.class));
         });
@@ -219,9 +229,34 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
             HyacinthListenerManager.register(module.getClass(), listener);
         }
 
+		// Killswitch targets
+		for (Class<?> featureClass : toRegister.get(KillswitchTarget.class))
+		{
+			Logger.verbose(" - Registering feature " + featureClass.getName());
+			KillswitchTarget target;
+
+			try {
+				target = (KillswitchTarget) Reflect.simpleInstantiate(featureClass);
+			} catch (InstantiationRuntimeException e) {
+				encounteredErrors = true;
+
+				Logger.verbose("§cFailed to register toggle-able feature " + featureClass.getName() + " with exception " + e.getCause().getClass().getSimpleName());
+
+				if (Hyacinth.getConfig("enableVerboseLogging", Boolean.class))
+				{
+					e.printStackTrace();
+				}
+
+				continue;
+			}
+
+			KillswitchManager.register((Class<? extends HyacinthModule>) moduleClass, target);
+		}
+
         // Finished
 
         loadedModules.put(moduleConfig.getString("name"), module);
+		loadedConfigurations.put(module, moduleConfig);
 
         if (!encounteredErrors)
         {
@@ -238,6 +273,12 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
 
         return module;
     }
+
+	@Override
+	public YamlConfiguration getConfiguration(HyacinthModule module)
+	{
+		return this.loadedConfigurations.get(module);
+	}
 
     private Class<?> locateModule(YamlConfiguration moduleConfig, JarFile jar, HyacinthModuleClassloader hmcl, boolean skipEntry)
     {
@@ -283,8 +324,14 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
     @Override
     public Option getModule(String moduleName) 
     {
-        return null;
+        return loadedModules.containsKey(moduleName) ? Option.some(loadedModules.get(moduleName)) : Option.none();
     }
+
+	@Override
+	public List<? extends HyacinthModule> getLoadedModules()
+	{
+		return new ArrayList<>(this.loadedModules.values());
+	}
 
     @Override
     public Class<?> getGlobalClass(String name, ClassLoader accessor) // TODO Write accessor checker
@@ -320,5 +367,6 @@ public class HyacinthModuleManager implements ModuleManager, Chainloadable
 	public void addModule(HyacinthModule module, YamlConfiguration configuration) 
 	{
 		this.loadedModules.put(configuration.getString("name"), module);
+		this.loadedConfigurations.put(module, configuration);
 	}
 }

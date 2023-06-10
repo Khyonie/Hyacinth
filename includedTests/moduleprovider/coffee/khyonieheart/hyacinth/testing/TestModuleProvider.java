@@ -57,4 +57,16 @@ public class TestModuleProvider implements ModuleManager, UnitTestable
 
         return results;
     }
+
+	@Override
+	public List<? extends HyacinthModule> getLoadedModules() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public YamlConfiguration getConfiguration(HyacinthModule module) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

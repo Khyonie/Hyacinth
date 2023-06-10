@@ -1,5 +1,7 @@
 package coffee.khyonieheart.hyacinth.util;
 
+import java.lang.reflect.Array;
+import java.util.List;
 import java.util.function.Function;
 
 import coffee.khyonieheart.hyacinth.util.marker.NotNull;
@@ -22,6 +24,7 @@ public class Arrays
      * @param mapper Optional 
      * @return String-formatted array
      */
+	@NotNull
     public static <T> String toString(
         @NotNull T[] array, 
         @NotNull String delimeter,
@@ -34,7 +37,7 @@ public class Arrays
 
         StringBuilder builder = new StringBuilder();
 
-        ArrayIterator<T> iter = create(array);
+        ArrayIterator<T> iter = iterator(array);
         while (iter.hasNext())
         {
             try {
@@ -52,6 +55,29 @@ public class Arrays
 
         return builder.toString();
     }
+
+	/**
+	 * Converts a list to an array.
+	 *
+	 * @param clazz Array class type
+	 * @param collection List to convert
+	 *
+	 * @return List converted to array
+	 */
+	@NotNull
+	public static <T> T[] toArray(
+		@NotNull Class<? extends T[]> clazz,
+		@NotNull List<T> collection
+	) {
+		Object[] data = new Object[collection.size()];
+
+		for (int i = 0; i < data.length; i++)
+		{
+			data[i] = collection.get(i);
+		}
+
+		return java.util.Arrays.copyOf(data, data.length, clazz);
+	}
    
 	/**
 	 * Creates a new array iterator for the given array, starting the index at the given starting position.
@@ -64,7 +90,8 @@ public class Arrays
 	 *
 	 * @since 1.0.0
 	 */
-    public static <T> ArrayIterator<T> create(
+	@NotNull
+    public static <T> ArrayIterator<T> iterator(
 		@NotNull T[] data, 
 		int startingIndex
 	) {
@@ -81,9 +108,39 @@ public class Arrays
 	 *
 	 * @since 1.0.0
 	 */
-	public static <T> ArrayIterator<T> create(
+	@NotNull
+	public static <T> ArrayIterator<T> iterator(
 		@NotNull T[] data
 	) {
-		return create(data, 0);
+		return iterator(data, 0);
+	}
+
+	/**
+	 * Maps an array to a different type.
+	 *
+	 * @param <T> Initial type
+	 * @param <R> Mapped type
+	 *
+	 * @param data Array to map
+	 * @param clazz Type of data to map to
+	 * @param mapper Mapping function that takes in T and returns R
+	 *
+	 * @return An array of R
+	 */
+	@NotNull
+	@SuppressWarnings("unchecked")
+	public static <T, R> R[] map(
+		@NotNull T[] data,
+		@NotNull Class<? extends R> clazz,
+		@NotNull Function<T, R> mapper
+	) {
+		R[] array = (R[]) Array.newInstance(clazz, data.length);
+		
+		for (int i = 0; i < data.length; i++)
+		{
+			array[i]  = mapper.apply(data[i]);
+		}
+
+		return array;
 	}
 }

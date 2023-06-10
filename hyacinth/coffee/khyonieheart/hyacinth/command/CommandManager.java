@@ -31,7 +31,7 @@ public interface CommandManager
      * @param name Label of the command, e.g "label" as "/label"
      * @param command Not-null command instance
      * @param server Optional server instance
-     * @apiNote If no server is provided but an {@link CommandMap} is needed, acquire server via {@link Bukkit#getServer()}.
+     * @apiNote If no server is provided but a {@link CommandMap} is needed, acquire server via {@link Bukkit#getServer()}.
      */
     public void register(
         @Nullable String name, 
@@ -61,6 +61,7 @@ public interface CommandManager
 	)
 		throws FileNotFoundException
 	{
+		Logger.verbose("Sourcing command manager from " + sourcePath);
 		String[] splitString = sourcePath.split("/");
 
 		if (splitString.length != 2)

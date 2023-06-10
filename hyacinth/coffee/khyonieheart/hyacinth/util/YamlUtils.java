@@ -22,7 +22,18 @@ import coffee.khyonieheart.hyacinth.util.marker.NotNull;
  */
 public class YamlUtils 
 {
-    public static YamlConfiguration of(Object... data) throws IllegalArgumentException
+	/**
+	 * Creates a configuration with the given data. Alternates between string keys and object values.
+	 *
+	 * @param data Configuration data
+	 *
+	 * @return Yaml configuration
+	 * @throws IllegalArgumentException When an odd number of arguments is given, or a key isn't a string
+	 */
+    public static YamlConfiguration of(
+		@NotNull Object... data
+	) 
+		throws IllegalArgumentException
     {
         YamlConfiguration config = new YamlConfiguration();
 
@@ -36,9 +47,9 @@ public class YamlUtils
         // Build config
         for (int i = 0; i < data.length; i++)
         {
-            if (data[i] instanceof String)
+            if (data[i] instanceof String key)
             {
-                config.set((String) data[i], data[++i]);
+                config.set(key, data[++i]);
                 continue;
             }
 

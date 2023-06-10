@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 
 import coffee.khyonieheart.hyacinth.Hyacinth;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
+import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
  * Listener management, registration, and unregistration.
@@ -20,8 +21,18 @@ public class HyacinthListenerManager
 {
 	private static Map<Class<? extends HyacinthModule>, List<Listener>> data = new HashMap<>();
 
-    public static void register(Class<? extends HyacinthModule> moduleClass, Listener listener)
-    {
+	/**
+	 * Registers a listener to a module.
+	 *
+	 * @param moduleClass Module class listener belongs to
+	 * @param listener Listener to register
+	 *
+	 * @since 1.0.0
+	 */
+    public static void register(
+		@NotNull Class<? extends HyacinthModule> moduleClass, 
+		@NotNull Listener listener
+	) {
 		if (!data.containsKey(moduleClass))
 		{
 			data.put(moduleClass, new ArrayList<>());

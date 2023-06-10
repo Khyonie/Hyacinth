@@ -23,7 +23,10 @@ public class Reflect
      * @throws InstantiationRuntimeException Thrown when another exception is thrown.
      * 
      * @implNote Because of how {@link Class#getConstructor(Class...)} works, downcasting arguments may be necessary.
+	 *
+	 * @since 1.0.0
      */
+	@NotNull
     public static <T> T simpleInstantiate(
         @NotNull Class<T> clazz, 
         Object... args
@@ -41,15 +44,20 @@ public class Reflect
     
     /**
      * Instantiates an object reflectively.
+	 *
      * @param <T> Type of object to instantiate
+	 *
      * @param clazz Class of object
      * @param constructorArgs Class arguments of constructor to obtain
      * @param args Arguments to be passed to T's constructor
-     * @return An object of type T
-     * @throws InstantiationRuntimeException Thrown when another exception is thrown.
+     * 
+	 * @return An object of type T
+     * 
+	 * @throws InstantiationRuntimeException Thrown when another exception is thrown.
      * 
      * @see Reflect#simpleInstantiate(Class, Object...)
      */
+	@NotNull
     public static <T> T simpleInstantiate(
         @NotNull Class<T> clazz,
         @NotNull Class<?>[] constructorArgs,

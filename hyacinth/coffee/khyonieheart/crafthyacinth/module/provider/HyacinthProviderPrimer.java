@@ -25,6 +25,9 @@ import coffee.khyonieheart.hyacinth.util.YamlUtils;
 
 /**
  * Module manager implementation that acts as the first link in the chainloading of a module manager provider.
+ *
+ * @author Khyonie
+ * @since 1.0.0
  */
 public class HyacinthProviderPrimer implements ModuleManager, UnitTestable
 {
@@ -78,6 +81,12 @@ public class HyacinthProviderPrimer implements ModuleManager, UnitTestable
         return Option.none();
     }
 
+	@Override
+	public List<? extends HyacinthModule> getLoadedModules()
+	{
+		throw new UnsupportedOperationException("Primer does not contain modules");
+	}
+
     @Override
     public Class<?> getGlobalClass(String name, ClassLoader accessor) 
     {
@@ -113,5 +122,11 @@ public class HyacinthProviderPrimer implements ModuleManager, UnitTestable
 	public void addModule(HyacinthModule module, YamlConfiguration configuration) 
 	{
 		throw new UnsupportedOperationException("Cannot add a module to a primer");	
+	}
+
+	@Override
+	public YamlConfiguration getConfiguration(HyacinthModule module) 
+	{
+		throw new UnsupportedOperationException("Primer does not store module configurations");
 	}
 }

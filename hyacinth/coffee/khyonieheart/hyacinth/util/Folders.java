@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import coffee.khyonieheart.hyacinth.util.marker.NotEmpty;
 import coffee.khyonieheart.hyacinth.util.marker.NotNull;
+import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 /**
  * Various utilities for manipulating folders
@@ -23,6 +24,7 @@ public class Folders
      *
      * @since 1.0.0
      */
+	@Nullable
     public static File ensureFolder(
         @NotNull String path
     ) throws
@@ -43,14 +45,18 @@ public class Folders
 
     /**
      * Creates a parent directory and a set of directories contained by parent.
+	 *
      * @param parent Parent directory
      * @param folders Not-null, not-empty array of folders to be created 
-     * @return List of created directories
-     * @implNote Already created directories are not added to the list.
+     * 
+	 * @return List of created directories
+     * 
+	 * @implNote Already created directories are not added to the list.
      * @throws IllegalStateException One or more directories failed to be created.
      * 
      * @since 1.0.0
      */
+	@NotNull
     public static List<File> ensureFolders(
         @NotNull String parent,
         @NotEmpty @NotNull String... folders

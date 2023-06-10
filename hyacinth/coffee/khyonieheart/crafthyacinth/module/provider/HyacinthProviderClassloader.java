@@ -7,12 +7,32 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
+import coffee.khyonieheart.hyacinth.util.marker.NotNull;
+
+/**
+ * Provider primer classloader, used for loading provider classes.
+ *
+ * @author Khyonie
+ * @since 1.0.0
+ */
 class HyacinthProviderClassloader extends URLClassLoader
 {
     private Map<String, Class<?>> interiorClasses = new HashMap<>();
     private HyacinthProviderPrimer manager;
 
-    public HyacinthProviderClassloader(File hostFile, ClassLoader parent, HyacinthProviderPrimer manager) throws MalformedURLException
+	/**
+	 * @param hostFile File that hosts this provider
+	 * @param parent Parent classloader
+	 * @param manager Hyacinth provider primer that is handling this provider
+	 *
+	 * @throws MalformedURLException When host file path is corrupt
+	 */
+    public HyacinthProviderClassloader(
+		@NotNull File hostFile, 
+		@NotNull ClassLoader parent, 
+		@NotNull HyacinthProviderPrimer manager
+	)
+		throws MalformedURLException
     {
         super(hostFile.getName(), new URL[] { hostFile.toURI().toURL() }, parent);
         this.manager = manager;
@@ -24,6 +44,16 @@ class HyacinthProviderClassloader extends URLClassLoader
         return findClass(name, true);
     }
 
+	/**
+	 * Attempts to find a class.
+	 *
+	 * @param name Class name
+	 * @param checkGlobal Whether or not to check global class cache
+	 *
+	 * @return A class contained in the host file.
+	 * @throws ClassNotFoundException Class does not exist in host file
+	 */
+	@NotNull
     public Class<?> findClass(String name, boolean checkGlobal) throws ClassNotFoundException
     {
         Class<?> result = interiorClasses.get(name);
