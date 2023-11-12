@@ -1,11 +1,8 @@
 package coffee.khyonieheart.hyacinth;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.jar.JarFile;
 
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -14,15 +11,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import coffee.khyonieheart.crafthyacinth.command.HyacinthCommandManager;
+import coffee.khyonieheart.crafthyacinth.event.HyacinthListenerManager;
 import coffee.khyonieheart.crafthyacinth.module.HyacinthCoreModule;
+import coffee.khyonieheart.crafthyacinth.module.HyacinthModuleManager;
 import coffee.khyonieheart.hibiscus.Hibiscus;
 import coffee.khyonieheart.hyacinth.command.CommandManager;
-import coffee.khyonieheart.hyacinth.exception.HyacinthModuleException;
+import coffee.khyonieheart.hyacinth.listener.ListenerManager;
+import coffee.khyonieheart.hyacinth.module.HyacinthModule;
 import coffee.khyonieheart.hyacinth.module.ModuleManager;
-import coffee.khyonieheart.hyacinth.testing.TestIdentifier;
-import coffee.khyonieheart.hyacinth.testing.UnitTestManager;
-import coffee.khyonieheart.hyacinth.testing.UnitTestResult;
-import coffee.khyonieheart.hyacinth.testing.UnitTestable;
+import coffee.khyonieheart.hyacinth.module.nouveau.ClassCoordinator;
+import coffee.khyonieheart.hyacinth.module.nouveau.ModuleLoaderPipeline;
 import coffee.khyonieheart.hyacinth.util.Folders;
 import coffee.khyonieheart.hyacinth.util.JarUtils;
 import coffee.khyonieheart.hyacinth.util.YamlUtils;
@@ -35,25 +33,23 @@ import coffee.khyonieheart.hyacinth.util.marker.Nullable;
  * @author Khyonie
  * @since 1.0.0
  */
-public class Hyacinth extends JavaPlugin implements UnitTestable
+public class Hyacinth extends JavaPlugin
 {
     private static final YamlConfiguration DEFAULT_CONFIG = YamlUtils.of(
-        "providers.moduleManagerProvider", "internal/coffee.khyonieheart.crafthyacinth.module.HyacinthModuleManager", // Format: Filename[.jar]/<class>
-        "providers.commandManagerProvider", "internal/coffee.khyonieheart.crafthyacinth.command.HyacinthCommandManager", // See above
-        "preferDiskConfigChanges", true, // If config was changed on disk, prefer those changes over the config in memory
-        "disallowMultipleInnerModuleClasses", false,
         "enableVerboseLogging", false,
         "enableModules", false,
         "performUnitTests", false,
-        "deleteUnusedKeys", true,
-        "regularLoggingFlavor", "§9Hyacinth §8> §7LOGGING §8> §7",
-        "verboseLoggingFlavor", "§9Hyacinth §8> §eVERBOSE §8> §7"
+        "regularLoggingFlavor", "§8[ §7LOGGING §8] §9%MODULE §8> §e%CLASS§6:§e%METHOD §8> §7",
+        "verboseLoggingFlavor", "§8[ §eVERBOSE §8] §9%MODULE §8> §e%CLASS§6:§e%METHOD §8> §7",
+		"debugLoggingFlavor", "§8[ §8 §cDEBUG §c §8] §9%MODULE §8> §e%CLASS§6:§e%METHOD §8> §7",
+		"todoLoggingFlavor", "§8[ §d §dTODO §d §d §8] §9%MODULE §8> §e%CLASS§6:§e%METHOD §8> §7"
     );
 
     private static Hyacinth instance;
     private static boolean libraryMode = true;
-    private static ModuleManager activeModuleManager;
-    private static CommandManager activeCommandManager = new HyacinthCommandManager(); // TODO This
+    private static ModuleManager moduleManager = new HyacinthModuleManager();
+    private static CommandManager commandManager = new HyacinthCommandManager();
+	private static ListenerManager listenerManager = new HyacinthListenerManager();
 
     private static YamlConfiguration loadedConfiguration = new YamlConfiguration();
     private static YamlConfiguration metadata = new YamlConfiguration();
@@ -65,7 +61,7 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
 
         instance = this;
 
-        Folders.ensureFolders("./Hyacinth", "providers/commands", "providers/modules", "modules");
+        Folders.ensureFolders("./Hyacinth", "modules");
 
         File configFile = new File("hyacinth.yml");
         boolean firstStart = false;
@@ -95,7 +91,7 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
         }
 
         Logger.verbose("Verifying config");
-        Logger.verbose("Looking for missing keys [1/2]");
+        Logger.verbose("Looking for missing keys");
         for (String key : DEFAULT_CONFIG.getKeys(true))
         {
             if (loadedConfiguration.contains(key, false))
@@ -103,27 +99,6 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
 
             Logger.verbose("§e - Missing key: " + key + " (default: " + DEFAULT_CONFIG.get(key) + ")");
             loadedConfiguration.set(key, DEFAULT_CONFIG.get(key));
-        }
-
-        Logger.verbose("Looking for unused keys [2/2]");
-        for (String key : loadedConfiguration.getKeys(true))
-        {
-            if (DEFAULT_CONFIG.contains(key, false))
-                continue;
-
-            Logger.verbose("§e - Unused key: " + key + "(value: " + loadedConfiguration.get(key) + ")");
-
-            if (loadedConfiguration.getBoolean("deleteUnusedKeys"))
-            {
-                Logger.verbose("§e - Deleting unused key " + key);
-                loadedConfiguration.set(key, null);
-            }
-        }
-
-        try {
-            loadedConfiguration.save(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         
         try {
@@ -153,39 +128,12 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
 		// Begin loading
         Logger.log("Loading Hyacinth " + metadata.getString("version"));
 
-		try {
-			activeModuleManager = ModuleManager.obtainModuleManager(loadedConfiguration.getString("providers.moduleManagerProvider"));
-			if (activeModuleManager == null)
-			{
-				throw new HyacinthModuleException();
-			}
-		} catch (FileNotFoundException | HyacinthModuleException e) {
-			e.printStackTrace();
-            Logger.log("§cFailed to load module manager. Cannot load modules");
-            return;
-		}
-
-		try {
-			activeCommandManager = CommandManager.sourceCommandManager(loadedConfiguration.getString("providers.commandManagerProvider"));
-
-			if (activeCommandManager == null)
-			{
-				throw new HyacinthModuleException();
-			}
-
-			Logger.verbose("Loaded command manager");
-		} catch (FileNotFoundException | HyacinthModuleException e) {
-			e.printStackTrace();
-			Logger.log("§cFailed to load command manager. Cannot register commands.");
-			return;
-		}
-
 		// Internal hyacinth module
 		HyacinthCoreModule hyacinth = new HyacinthCoreModule();
-		activeModuleManager.addModule(hyacinth, HyacinthCoreModule.getConfiguration());
+		moduleManager.registerModule(hyacinth);
 
 		Hibiscus hibiscus = new Hibiscus();
-		activeModuleManager.addModule(hibiscus, Hibiscus.getConfiguration());
+		moduleManager.registerModule(hibiscus);
 
         if (!loadedConfiguration.getBoolean("enableModules") && libraryMode == true)
         {
@@ -201,53 +149,42 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
         }
 
 		// Load modules
-        File[] presentModuleFiles = new File("Hyacinth/modules/").listFiles();
+		ModuleLoaderPipeline loader = new ModuleLoaderPipeline();
+		
+		try {
+			loader.load();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        for (File modFile : presentModuleFiles)
-        {
-            if (!modFile.getName().endsWith(".jar"))
-            {
-                continue;
-            }
-
-            try {
-                activeModuleManager.loadModule(modFile);
-                continue;
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (HyacinthModuleException e) {
-                e.printStackTrace();
-            }
-            Logger.log("§cFailed to load module file " + modFile.getName());
-        }
-
-		activeModuleManager.getLoadedModules().forEach(mod -> mod.onEnable());
+		for (HyacinthModule module : moduleManager.getModules())
+		{
+			try {
+				YamlConfiguration config = module.getConfiguration();
+				Logger.verbose("Running onEnable() for module " + (config != null ? config.getString("name") : ClassCoordinator.getOwningModule(module.getClass()).getConfiguration().getString("name")));
+				module.onEnable();
+			} catch (Exception e) {
+				Logger.log("§cFailed to enable module " + module.getClass().getName());
+				e.printStackTrace();
+			}
+		}
 
         Logger.verbose("Loading complete");
         Logger.log("Loaded in " + (System.currentTimeMillis() - currentTime) + " ms");
 
         // Loading complete
-
-        try {
-            if (loadedConfiguration.getBoolean("performUnitTests"))
-            {
-                UnitTestManager.performUnitTests(true, this);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void onDisable()
     {
-        saveHyacinthConfig();
-
-		activeModuleManager.getLoadedModules().forEach(mod -> mod.onDisable());
+		moduleManager.getModules().forEach(mod -> { 
+			try { 
+				mod.onDisable(); 
+			} catch (Exception e) { 
+				e.printStackTrace(); 
+			}
+		});
     } 
 
 	/**
@@ -298,10 +235,10 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
      * 
      * @since 1.0.0
      */
-	@Nullable
+	@NotNull
     public static ModuleManager getModuleManager()
     {
-        return activeModuleManager;
+        return moduleManager;
     }
 
     /**
@@ -310,11 +247,17 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
      * 
      * @since 1.0.0
      */
-	@Nullable
+	@NotNull
     public static CommandManager getCommandManager()
     {
-        return activeCommandManager;
+        return commandManager;
     }
+
+	@NotNull
+	public static ListenerManager getListenerManager()
+	{
+		return listenerManager;
+	}
 
     /**
      * Obtains Hyacinth's current instance.
@@ -399,62 +342,5 @@ public class Hyacinth extends JavaPlugin implements UnitTestable
         }
 
         return CACHED_JAR;
-    }
-
-    //
-    // Instance methods
-    //
-
-    private void saveHyacinthConfig()
-    {
-        Logger.log("Saving config");
-
-        File configFile = new File("hyacinth.yml");
-
-        try {
-            if (!configFile.exists())
-            {
-                DEFAULT_CONFIG.save(configFile);
-                Logger.verbose("Config file does not exist, creating");
-                return;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Logger.verbose("Checking for changes on disk");
-
-        YamlConfiguration localConfig = new YamlConfiguration();
-        
-        try {
-            localConfig.load(configFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        YamlUtils.mergeConfigs(loadedConfiguration, localConfig);
-
-        try {
-            loadedConfiguration.save(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    @TestIdentifier("Hyacinth core tests")
-    public List<UnitTestResult> test() 
-    {
-        List<UnitTestResult> completedTests = new ArrayList<>();
-
-        completedTests.add(new UnitTestResult(instance != null, "Null plugin instance", (instance != null ? null : "Hyacinth static instance not set"), this));
-
-        File hyacinthConfigFile = new File("hyacinth.yml");
-        completedTests.add(new UnitTestResult(hyacinthConfigFile.exists(), "Main config exists", (hyacinthConfigFile.exists() ? null : "Main config file does not exist on disk"), this));
-
-        // TODO Write more tests
-
-        return completedTests;
     }
 }

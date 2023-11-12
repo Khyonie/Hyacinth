@@ -4,8 +4,10 @@ import java.lang.reflect.Array;
 import java.util.List;
 import java.util.function.Function;
 
+import coffee.khyonieheart.hyacinth.api.RuntimeConditions;
 import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.hyacinth.util.marker.Range;
 
 /**
  * Various utilities for arrays.
@@ -55,6 +57,23 @@ public class Arrays
 
         return builder.toString();
     }
+
+	public static <T> String toString(
+		@NotNull T[] array,
+		@NotNull String delimiter
+	) {
+		return toString(array, delimiter, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T[] genericArray(
+		@NotNull Class<T> type,
+		@Range(minimum = 0, maximum = 255) int size
+	) {
+		RuntimeConditions.requireWithinRange(size, 0, 255);
+
+		return (T[]) java.lang.reflect.Array.newInstance(type, size);
+	}
 
 	/**
 	 * Converts a list to an array.

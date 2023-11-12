@@ -8,14 +8,30 @@ import coffee.khyonieheart.hyacinth.command.parser.ValidatorContext;
 import coffee.khyonieheart.hyacinth.option.Option;
 import coffee.khyonieheart.hyacinth.util.Arrays;
 
+/**
+ * A collection of validators to verify numerical inputs.
+ *
+ * @author Khyonie
+ * @since 1.0.0
+ *
+ * @deprecated Will be supersceded by Tidal 2.0.
+ */
+@Deprecated
 public class NumberValidator
 {
 	public static DualValidator longValidator()
 	{
 		return new DualValidator() {
 			@Override
-			public Option validate(CommandSender sender, ValidatorContext context, CompletionBranch branch, String argument, int argumentIndex, String commandLabel, String[] args)
-			{
+			public Option validate(
+				CommandSender sender, 
+				ValidatorContext context, 
+				CompletionBranch branch, 
+				String argument, 
+				int argumentIndex, 
+				String commandLabel, 
+				String[] args
+			) {
 				try {
 					Long.parseLong(argument);
 					return Option.none();
@@ -36,8 +52,15 @@ public class NumberValidator
 	{
 		return new DualValidator() {
 			@Override
-			public Option validate(CommandSender sender, ValidatorContext context, CompletionBranch branch, String argument, int argumentIndex, String commandLabel, String[] args)
-			{
+			public Option validate(
+				CommandSender sender, 
+				ValidatorContext context, 
+				CompletionBranch branch, 
+				String argument, 
+				int argumentIndex, 
+				String commandLabel, 
+				String[] args
+			) {
 				try {
 					Integer.parseInt(argument);
 					return Option.none();
@@ -58,8 +81,15 @@ public class NumberValidator
 	{
 		return new DualValidator() {
 			@Override
-			public Option validate(CommandSender sender, ValidatorContext context, CompletionBranch branch, String argument, int argumentIndex, String commandLabel, String[] args)
-			{
+			public Option validate(
+				CommandSender sender, 
+				ValidatorContext context, 
+				CompletionBranch branch, 
+				String argument, 
+				int argumentIndex, 
+				String commandLabel, 
+				String[] args
+			) {
 				try {
 					Double.parseDouble(argument);
 					return Option.none();

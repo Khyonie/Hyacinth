@@ -2,6 +2,7 @@ package coffee.khyonieheart.hibiscus.inventory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -9,27 +10,48 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import coffee.khyonieheart.hyacinth.api.RuntimeConditions;
+import coffee.khyonieheart.hyacinth.util.marker.NotNull;
+import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.hyacinth.util.marker.Range;
+
 public class InventoryBuilder
 {
 	private Inventory inventory;
 
-	private InventoryBuilder(int rows, String name)
-	{
+	private InventoryBuilder(
+		@Range(minimum = 1, maximum = 6) int rows, 
+		@NotNull String name
+	) {
+		Objects.requireNonNull(name);
+		RuntimeConditions.requireWithinRange(rows, 1, 6);
+
 		inventory = Bukkit.createInventory(null, rows * 9, name);
 	}
 
-	public static InventoryBuilder builder(int rows, String name)
-	{
-		if (rows < 1 || rows > 6)
-		{
-			throw new IllegalArgumentException("Expected 1-6 rows, received " + rows);
-		}
+	@NotNull
+	public static InventoryBuilder builder(
+		@Range(minimum = 1, maximum = 6) int rows, 
+		@NotNull String name
+	) {
+		Objects.requireNonNull(name);
+		RuntimeConditions.requireWithinRange(rows, 1, 6);
 
 		return new InventoryBuilder(rows, name);
 	}
 
-	public InventoryBuilder setItem(int slot, Material material, String name, int count, String... lore)
-	{
+	@NotNull 
+	public InventoryBuilder setItem(
+		int slot, 
+		@NotNull Material material, 
+		@NotNull String name, 
+		@Range(minimum = 0, maximum = Integer.MAX_VALUE) int count, 
+		String... lore
+	) {
+		Objects.requireNonNull(material);
+		Objects.requireNonNull(name);
+		RuntimeConditions.requirePositive(count);
+
 		ItemStack item = new ItemStack(material, count);
 
 		ItemMeta meta = item.getItemMeta();
@@ -42,15 +64,22 @@ public class InventoryBuilder
 		return setItem(slot, item);
 	}
 
-	public InventoryBuilder setItem(int slot, ItemStack item)
-	{
+	@NotNull 
+	public InventoryBuilder setItem(
+		int slot, 
+		@Nullable ItemStack item
+	) {
 		inventory.setItem(slot, item);
 
 		return this;
 	}
 
-	public InventoryBuilder setItems(Map<Integer, ItemStack> data)
-	{
+	@NotNull 
+	public InventoryBuilder setItems(
+		@NotNull Map<Integer, ItemStack> data
+	) {
+		Objects.requireNonNull(data);
+
 		data.forEach((slot, item) -> {
 			if (slot < 0 || slot >= inventory.getSize())
 			{
@@ -63,12 +92,16 @@ public class InventoryBuilder
 		return this;
 	}
 
-	public InventoryBuilder paint(int x1, int y1, int x2, int y2, ItemStack item)
-	{
-		if (x1 < 0 || x1 > 8 || x2 < 0 || x2 > 8)
-		{
-			throw new IllegalArgumentException("X must be a positive integer from 0 to 8");
-		}
+	@NotNull 
+	public InventoryBuilder paint(
+		int x1, 
+		int y1, 
+		int x2, 
+		int y2, 
+		@Nullable ItemStack item
+	) {
+		RuntimeConditions.requireWithinRange(x1, 0, 8);
+		RuntimeConditions.requireWithinRange(x1, 0, 8);
 
 		if (y1 < 0 || y1 >= (inventory.getSize() / 9) || y2 < 0 || y2 >= (inventory.getSize() / 9))
 		{
@@ -86,6 +119,7 @@ public class InventoryBuilder
 		return this;
 	}
 
+	@NotNull
 	public Inventory create()
 	{
 		return inventory;

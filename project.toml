@@ -1,0 +1,15 @@
+[project]
+name = "Hyacinth"
+libraries = ["lib/"]
+
+[task]
+
+[task.main]
+source = "hyacinth/"
+output = ["~/Servers/Minecraft/1.20.1/plugins/Hyacinth.jar"]
+input = ["plugin.yml", "meta/meta.yml", "meta/hyacinth.yml"]
+
+[task.1_19_R2]
+source = "hyacinth/"
+output = ["~/Servers/Minecraft/1.19.4/plugins/Hyacinth.jar"]
+input = ["plugin.yml", "meta/meta.yml", "meta/hyacinth.yml"]

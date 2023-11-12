@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
-
-import com.google.gson.reflect.TypeToken;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +14,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import coffee.khyonieheart.hyacinth.Hyacinth;
+import com.google.gson.reflect.TypeToken;
+
 import coffee.khyonieheart.hyacinth.Logger;
 import coffee.khyonieheart.hyacinth.data.PlayerDataManager;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
@@ -39,8 +39,9 @@ public class HyacinthDataManager implements PlayerDataManager, Listener
 	 * @param event Player join event
 	 */
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerJoin(PlayerJoinEvent event)
-	{
+	public void onPlayerJoin(
+		PlayerJoinEvent event
+	) {
 		File file = new File("./Hyacinth/playerdata/" + event.getPlayer().getUniqueId().toString() + ".json");
 
 		// Load from file, or if not present, create new data
@@ -49,7 +50,7 @@ public class HyacinthDataManager implements PlayerDataManager, Listener
 		// Automatically create data if not present
 		for (HyacinthModule mod : registeredDataCreators.keySet())
 		{
-			String name = Hyacinth.getModuleManager().getConfiguration(mod).getString("name");
+			String name = mod.getConfiguration().getString("name");
 			if (data.containsKey(name))
 			{
 				continue;
@@ -70,37 +71,59 @@ public class HyacinthDataManager implements PlayerDataManager, Listener
 	 * @param event Player quit event
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerLeave(PlayerQuitEvent event)
-	{
+	public void onPlayerLeave(
+		PlayerQuitEvent event
+	) {
 		save(event.getPlayer());
 	}
 
+	@NotNull
 	public static Map<String, CastableHashMap<String, Object>> get(
 		@NotNull Player player
 	) {
+		Objects.requireNonNull(player);
+
 		return loadedData.get(player);
 	}
 
+	@NotNull
 	public static Map<String, Object> get(
 		@NotNull Player player, 
 		@NotNull String module
 	) {
+		Objects.requireNonNull(player);
+		Objects.requireNonNull(module);
+
 		return loadedData.get(player).get(module);
 	}
 
-	public static Map<String, Object> get(Player player, HyacinthModule module)
-	{
-		return loadedData.get(player).get(Hyacinth.getModuleManager().getConfiguration(module).getString("name"));
+	@NotNull
+	public static Map<String, Object> get(
+		@NotNull Player player, 
+		@NotNull HyacinthModule module
+	) {
+		Objects.requireNonNull(player);
+		Objects.requireNonNull(module);
+
+		return loadedData.get(player).get(module.getConfiguration().getString("name"));
 	}
 
-	public static void registerDataCreator(HyacinthModule mod, Function<Player, CastableHashMap<String, Object>> creator)
-	{
+	public static void registerDataCreator(
+		@NotNull HyacinthModule mod, 
+		@NotNull Function<Player, CastableHashMap<String, Object>> creator
+	) {
+		Objects.requireNonNull(mod);
+		Objects.requireNonNull(creator);
+
 		registeredDataCreators.put(mod, creator);
 	}
 
 	@Override
-	public Map<String, CastableHashMap<String, Object>> load(File file) 
-	{
+	public Map<String, CastableHashMap<String, Object>> load(
+		File file
+	) {
+		Objects.requireNonNull(file);
+
 		Map<String, CastableHashMap<String, Object>> data;
 
 		if (!file.exists())
@@ -131,8 +154,9 @@ public class HyacinthDataManager implements PlayerDataManager, Listener
 	}
 
 	@Override
-	public File save(Player player) 
-	{
+	public File save(
+		Player player
+	) {
 		Map<String, CastableHashMap<String, Object>> data = loadedData.get(player); 
 		loadedData.remove(player);
 

@@ -7,18 +7,28 @@ import coffee.khyonieheart.hyacinth.command.parser.ValidatorContext;
 import coffee.khyonieheart.hyacinth.option.Option;
 import coffee.khyonieheart.hyacinth.print.Grammar;
 
+/**
+ * @deprecated Will be supersceded by Tidal 2.0.
+ */
+@Deprecated
 public class MinimumArgumentsIntrinsic implements IntrinsicValidator
 {
 	private final int minimumArgs;
 
-	public MinimumArgumentsIntrinsic(int minimumArgs)
-	{
+	public MinimumArgumentsIntrinsic(
+		int minimumArgs
+	) {
 		this.minimumArgs = minimumArgs;
 	}
 
 	@Override
-	public Option validate(CommandSender sender, ValidatorContext context, String commandLabel, int argsCount, String[] args) 
-	{
+	public Option validate(
+		CommandSender sender, 
+		ValidatorContext context, 
+		String commandLabel, 
+		int argsCount, 
+		String[] args
+	) {
 		return switch (context)
 		{
 			case TABCOMPLETE -> Option.none();

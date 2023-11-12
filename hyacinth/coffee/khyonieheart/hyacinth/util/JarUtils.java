@@ -65,6 +65,7 @@ public class JarUtils
 
 		try {
 			Method getFile = JavaPlugin.class.getDeclaredMethod("getFile");
+			getFile.setAccessible(true);
 			File file = (File) getFile.invoke(plugin);
 			return new JarFile(file);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | IOException e) {

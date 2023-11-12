@@ -16,14 +16,24 @@ import coffee.khyonieheart.hibiscus.GuiConfiguration;
 import coffee.khyonieheart.hibiscus.element.ButtonElement;
 import coffee.khyonieheart.hibiscus.element.ItemStackElement;
 import coffee.khyonieheart.hibiscus.inventory.InventoryBuilder;
+import coffee.khyonieheart.hyacinth.util.marker.NotNull;
+import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
+/**
+ * Base implementation of a paged GUI that automatically generates configurations for each "page" of given elements.
+ *
+ * @since 1.0.0
+ * @author Khyonie
+ */
 public class HibiscusPagedGui extends HibiscusGui
 {
 	private static final String leftArrow = "http://textures.minecraft.net/texture/5f133e91919db0acefdc272d67fd87b4be88dc44a958958824474e21e06d53e6";
 	private static final String rightArrow = "http://textures.minecraft.net/texture/e3fc52264d8ad9e654f415bef01a23947edbccccf649373289bea4d149541f70";
 
-	public HibiscusPagedGui(String inventoryLabel, List<Element> data) 
-	{
+	public HibiscusPagedGui(
+		@Nullable String inventoryLabel, 
+		@NotNull List<Element> data
+	) {
 		super(
 			inventoryLabel, 
 			6, 
@@ -82,8 +92,10 @@ public class HibiscusPagedGui extends HibiscusGui
 		}
 	}
 
-	private static ItemStack getHead(String name, String data)
-	{
+	private static ItemStack getHead(
+		@NotNull String name, 
+		@NotNull String data
+	) {
 		PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
 		try {
 			profile.getTextures().setSkin(new URL(data));

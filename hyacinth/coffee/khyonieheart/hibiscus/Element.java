@@ -11,6 +11,7 @@ import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 public interface Element
 {
+	@NotNull
 	public ItemStack toIcon();
 
 	public void onInteract(

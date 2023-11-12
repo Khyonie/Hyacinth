@@ -14,9 +14,8 @@ import org.bukkit.command.CommandMap;
 
 import coffee.khyonieheart.hyacinth.Logger;
 import coffee.khyonieheart.hyacinth.command.CommandManager;
-import coffee.khyonieheart.hyacinth.command.HyacinthCommand;
+import coffee.khyonieheart.hyacinth.module.ModuleOwned;
 import coffee.khyonieheart.hyacinth.print.Grammar;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 /**
  * Internal implementation of a command manager.
@@ -27,11 +26,14 @@ import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 public class HyacinthCommandManager implements CommandManager
 {
     private CommandMap activeCommandMap;
-    private Map<String, HyacinthCommand> registeredCommands = new HashMap<>();
+    private Map<String, Command> registeredCommands = new HashMap<>();
 
     @Override
-    public void register(String name, HyacinthCommand command, Server server) 
-    {
+    public <T extends Command & ModuleOwned> void register(
+		String name, 
+		T command, 
+		Server server
+	) {
         Logger.verbose("Attempting to register command \"/" + name + "\"");
 
         Objects.requireNonNull(command);
@@ -72,8 +74,9 @@ public class HyacinthCommandManager implements CommandManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public void unregister(String name) 
-    {
+    public void unregister(
+		String name
+	)  {
         Logger.verbose("Unregistering command \"/" + name + "\"");
         registeredCommands.remove(name);
 
@@ -91,9 +94,9 @@ public class HyacinthCommandManager implements CommandManager
     }
     
     @Override
-    @Nullable
-    public HyacinthCommand getHyacinthCommand(String name) 
-    {
+    public Command getRegisteredCommand(
+		String name
+	) {
         return registeredCommands.get(name);
     }
 }

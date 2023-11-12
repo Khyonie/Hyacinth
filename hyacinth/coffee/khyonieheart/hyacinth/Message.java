@@ -3,6 +3,8 @@ package coffee.khyonieheart.hyacinth;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+
 /**
  * Utilities for sending messages to entities.
  * 
@@ -29,4 +31,9 @@ public class Message
 
         target.sendMessage(message);
     }   
+
+	public static void send(CommandSender target, BaseComponent[] message)
+	{
+		target.spigot().sendMessage(message);
+	}
 }

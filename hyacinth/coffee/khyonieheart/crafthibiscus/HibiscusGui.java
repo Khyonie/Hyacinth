@@ -22,8 +22,13 @@ import coffee.khyonieheart.hibiscus.Element;
 import coffee.khyonieheart.hibiscus.Gui;
 import coffee.khyonieheart.hibiscus.GuiConfiguration;
 import coffee.khyonieheart.hibiscus.Hibiscus;
+import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.hyacinth.util.marker.Range;
 
+/**
+ * Base implementation of a Hibiscus GUI.
+ */
 public class HibiscusGui implements Gui
 {
 	private Inventory base;
@@ -41,6 +46,7 @@ public class HibiscusGui implements Gui
 		InventoryAction.PICKUP_HALF, // Right click
 		InventoryAction.MOVE_TO_OTHER_INVENTORY // Shift-left click
 	);
+
 	private Predicate<InventoryClickEvent> clickFilter = (event) -> { 
 		if (event.getRawSlot() >= base.getSize())
 		{
@@ -63,29 +69,38 @@ public class HibiscusGui implements Gui
 
 	private ClickOffAction clickOffAction = ClickOffAction.DRILLDOWN;
 
-	public HibiscusGui(String inventoryLabel, int rows, Inventory inventory)
-	{
+	public HibiscusGui(
+		@Nullable String inventoryLabel, 
+		@Range(minimum = 1, maximum = 6) int rows, 
+		@NotNull Inventory inventory
+	) {
 		if (rows < 1 || rows > 6)
 		{
 			throw new IllegalArgumentException("GUI must have 1-6 rows, received " + rows);
 		}
+
+		Objects.requireNonNull(inventory);
 
 		this.base = inventory;
 		this.rows = rows;
 		this.label = inventoryLabel;
 	}
 
-	public HibiscusGui setFilter(Predicate<InventoryClickEvent> clickFilter)
-	{
-		Objects.requireNonNull(clickFilter, "Click filter cannot not be null");
+	@NotNull
+	public HibiscusGui setFilter(
+		@NotNull Predicate<InventoryClickEvent> clickFilter
+	) {
+		Objects.requireNonNull(clickFilter);
 
 		this.clickFilter = clickFilter;
 
 		return this;
 	}
 
-	public HibiscusGui setClickOffAction(ClickOffAction action)
-	{
+	@NotNull
+	public HibiscusGui setClickOffAction(
+		@NotNull ClickOffAction action
+	) {
 		Objects.requireNonNull(action, "Click-off action cannot be null");
 
 		this.clickOffAction = action;
@@ -94,8 +109,12 @@ public class HibiscusGui implements Gui
 	}
 
 	@Override
-	public void addConfiguration(String name, GuiConfiguration configuration) 
-	{
+	public void addConfiguration(
+		String name, 
+		GuiConfiguration configuration
+	) {
+		Objects.requireNonNull(configuration);
+
 		configurations.put(name, configuration);
 
 		if (defaultConfiguration == null)
@@ -105,8 +124,10 @@ public class HibiscusGui implements Gui
 	}
 
 	@Override
-	public void setConfiguration(Player player, String configurationName)
-	{
+	public void setConfiguration(
+		Player player, 
+		String configurationName
+	) {
 		Objects.requireNonNull(configurations.get(configurationName), "Unknown configuration \"" + configurationName + "\"");
 
 		InventoryView view = player.getOpenInventory();
@@ -123,8 +144,12 @@ public class HibiscusGui implements Gui
 	}
 
 	@Override
-	public void addLayer(Player player, int row, String configurationName)
-	{
+	public void addLayer(
+		Player player, 
+		int row, 
+		String configurationName
+	) {
+		Objects.requireNonNull(player);
 		Objects.requireNonNull(configurations.get(configurationName), "Unknown configuration \"" + configurationName + "\"");
 		
 		InventoryView view = player.getOpenInventory();
@@ -136,8 +161,9 @@ public class HibiscusGui implements Gui
 	}
 
 	@Override
-	public void removeLayer(Player player)
-	{
+	public void removeLayer(
+		Player player
+	) {
 		GuiConfiguration removedConfiguration = layers.pop();
 		GuiConfiguration topConfiguration = layers.getFirst();
 
@@ -156,8 +182,9 @@ public class HibiscusGui implements Gui
 	 * @implNote This implementation is faster than calling this{@link #removeLayer(Player)} over and over with many large layers, but is slower than this{@link #setConfiguration(Player, String)} when many layers with small changes are present
 	 */
 	@Override
-	public void removeAllLayers(Player player)
-	{
+	public void removeAllLayers(
+		Player player
+	) {
 		Set<Integer> modifiedIntegers = new HashSet<>();
 		GuiConfiguration bottomConfiguration = layers.getLast();
 
@@ -181,23 +208,26 @@ public class HibiscusGui implements Gui
 	}
 
 	@Override
-	@Nullable
 	public GuiConfiguration getDefaultConfiguration()
 	{
 		return configurations.get(defaultConfiguration);
 	}
 
 	@Override
-	public void setDefaultConfiguration(String configurationName)
-	{
+	public void setDefaultConfiguration(
+		String configurationName
+	) {
 		Objects.requireNonNull(configurations.get(configurationName), "Unknown configuration \"" + configurationName + "\"");
 		
 		this.defaultConfiguration = configurationName;
 	}
 
 	@Override
-	public void open(Player player)
-	{
+	public void open(
+		Player player
+	) {
+		Objects.requireNonNull(player);
+
 		InventoryView view = player.openInventory(base);
 		Hibiscus.registerOpen(player, this);
 
@@ -214,8 +244,12 @@ public class HibiscusGui implements Gui
 	}
 
 	@Override
-	public int setRows(Player player, int rows)
-	{
+	public int setRows(
+		Player player, 
+		int rows
+	) {
+		Objects.requireNonNull(player);
+
 		if (this.rows == rows)
 		{
 			return rows;
@@ -251,8 +285,12 @@ public class HibiscusGui implements Gui
 	}
 
 	@Override
-	public String setName(Player player, String name)
-	{
+	public String setName(
+		Player player, 
+		String name
+	) {
+		Objects.requireNonNull(player);
+
 		String oldName = this.label;
 		this.label = name;
 
@@ -269,8 +307,9 @@ public class HibiscusGui implements Gui
 		return oldName;
 	}
 
-	private void rebuildElements(InventoryView view)
-	{
+	private void rebuildElements(
+		@NotNull InventoryView view
+	) {
 		Iterator<GuiConfiguration> iter = layers.descendingIterator();
 		while (iter.hasNext())
 		{
@@ -288,8 +327,13 @@ public class HibiscusGui implements Gui
 	}
 
 	@Override
-	public void onClick(Player player, InventoryClickEvent event) 
-	{
+	public void onClick(
+		Player player, 
+		InventoryClickEvent event
+	) {
+		Objects.requireNonNull(player);
+		Objects.requireNonNull(event);
+
 		if (!this.clickFilter.test(event))	
 		{
 			return;
@@ -358,14 +402,17 @@ public class HibiscusGui implements Gui
 	}
 
 	@Override
-	public void regenerate(Player player) 
-	{
+	public void regenerate(
+		Player player
+	) {
 		rebuildElements(player.getOpenInventory());
 	}
 
 	@Override
-	public void regenerate(Player player, int slot) 
-	{
+	public void regenerate(
+		Player player, 
+		int slot
+	) {
 		Iterator<GuiConfiguration> iter = layers.iterator();
 		while (iter.hasNext())
 		{

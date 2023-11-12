@@ -3,9 +3,9 @@ package coffee.khyonieheart.crafthyacinth.killswitch.suggestions;
 import java.util.ArrayList;
 import java.util.List;
 
-import coffee.khyonieheart.crafthyacinth.killswitch.KillswitchManager;
+import coffee.khyonieheart.crafthyacinth.killswitch.FeatureManager;
 import coffee.khyonieheart.hyacinth.command.parser.SuggestionGenerator;
-import coffee.khyonieheart.hyacinth.killswitch.KillswitchIdentifier;
+import coffee.khyonieheart.hyacinth.killswitch.FeatureIdentifier;
 
 public class KillswitchSuggestionEngine implements SuggestionGenerator
 {
@@ -14,11 +14,11 @@ public class KillswitchSuggestionEngine implements SuggestionGenerator
 	{
 		List<String> results = new ArrayList<>();
 
-		KillswitchManager.getAll().forEach((module, targets) -> {
+		FeatureManager.getAll().forEach((module, targets) -> {
 			targets.forEach((target) -> {
-				if (target.getClass().isAnnotationPresent(KillswitchIdentifier.class))
+				if (target.getClass().isAnnotationPresent(FeatureIdentifier.class))
 				{
-					KillswitchIdentifier id = target.getClass().getAnnotation(KillswitchIdentifier.class);
+					FeatureIdentifier id = target.getClass().getAnnotation(FeatureIdentifier.class);
 
 					for (String s : id.value())
 					{

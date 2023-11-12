@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.event.Listener;
 
 import coffee.khyonieheart.hyacinth.Hyacinth;
+import coffee.khyonieheart.hyacinth.listener.ListenerManager;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
 import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
@@ -17,19 +18,12 @@ import coffee.khyonieheart.hyacinth.util.marker.NotNull;
  * @author Khyonie 
  * @since 1.0.0
  */
-public class HyacinthListenerManager 
+public class HyacinthListenerManager implements ListenerManager
 {
 	private static Map<Class<? extends HyacinthModule>, List<Listener>> data = new HashMap<>();
 
-	/**
-	 * Registers a listener to a module.
-	 *
-	 * @param moduleClass Module class listener belongs to
-	 * @param listener Listener to register
-	 *
-	 * @since 1.0.0
-	 */
-    public static void register(
+	@Override
+    public void register(
 		@NotNull Class<? extends HyacinthModule> moduleClass, 
 		@NotNull Listener listener
 	) {

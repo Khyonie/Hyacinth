@@ -1,7 +1,7 @@
 {
     "java.project.sourcePaths": [
         "includedTests/moduleprovider",
-        "origami",
+        "hyacinth",
         "debugmodule"
     ],
     "files.exclude": {

@@ -8,15 +8,14 @@ import org.bukkit.entity.Player;
 import coffee.khyonieheart.crafthyacinth.command.HyacinthTabCompleter;
 import coffee.khyonieheart.crafthyacinth.command.parser.HyacinthCompletionBranch;
 import coffee.khyonieheart.crafthyacinth.command.parser.validator.PermissionValidator;
-import coffee.khyonieheart.crafthyacinth.killswitch.KillswitchManager;
+import coffee.khyonieheart.crafthyacinth.killswitch.FeatureManager;
 import coffee.khyonieheart.crafthyacinth.module.HyacinthCoreModule;
 import coffee.khyonieheart.hyacinth.command.HyacinthCommand;
 import coffee.khyonieheart.hyacinth.command.NoSubCommandExecutor;
 import coffee.khyonieheart.hyacinth.command.parser.CompletionRoot;
-import coffee.khyonieheart.hyacinth.killswitch.KillswitchIdentifier;
-import coffee.khyonieheart.hyacinth.killswitch.KillswitchTarget;
+import coffee.khyonieheart.hyacinth.killswitch.Feature;
+import coffee.khyonieheart.hyacinth.killswitch.FeatureIdentifier;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
-import coffee.khyonieheart.hyacinth.option.Option;
 import coffee.khyonieheart.hyacinth.print.Grammar;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -58,16 +57,15 @@ public class HyacinthCoreCommand extends HyacinthCommand
 			return;
 		}
 
-		Option moduleOption = Hyacinth.getModuleManager().getModule(targetName[0]);
+		HyacinthModule module = Hyacinth.getModuleManager().getModule(targetName[0]);
 
-		if (moduleOption.isNone())
+		if (module == null)
 		{
 			Message.send(sender, "§cUnknown module \"" + targetName[0] + "\".");
 			return;
 		}
 
-		HyacinthModule module = moduleOption.unwrap(HyacinthModule.class);
-		List<KillswitchTarget> targets = KillswitchManager.get(module.getClass());
+		List<Feature> targets = FeatureManager.get(module.getClass());
 
 		if (targets == null)
 		{
@@ -75,15 +73,15 @@ public class HyacinthCoreCommand extends HyacinthCommand
 			return;
 		}
 
-		KillswitchTarget target = null;
-		for (KillswitchTarget t : targets)
+		Feature target = null;
+		for (Feature t : targets)
 		{
-			if (!t.getClass().isAnnotationPresent(KillswitchIdentifier.class))
+			if (!t.getClass().isAnnotationPresent(FeatureIdentifier.class))
 			{
 				continue;
 			}
 
-			for (String id : t.getClass().getAnnotation(KillswitchIdentifier.class).value())
+			for (String id : t.getClass().getAnnotation(FeatureIdentifier.class).value())
 			{
 				if (targetName[1].equals(id))
 				{
@@ -148,10 +146,10 @@ public class HyacinthCoreCommand extends HyacinthCommand
 			link.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Khyonie/Hyacinth/wiki"));
 			player.spigot().sendMessage(new ComponentBuilder().append(link).create());
 		}
-		Message.send(sender, "§d❀ §9(§a" + Hyacinth.getModuleManager().getLoadedModules().size() + "§9) " + Grammar.plural(Hyacinth.getModuleManager().getLoadedModules().size(), "module ", "modules ") + "loaded:");
-		for (HyacinthModule m : Hyacinth.getModuleManager().getLoadedModules())
+		Message.send(sender, "§d❀ §9(§a" + Hyacinth.getModuleManager().getModules().size() + "§9) " + Grammar.plural(Hyacinth.getModuleManager().getModules().size(), "module ", "modules ") + "loaded:");
+		for (HyacinthModule m : Hyacinth.getModuleManager().getModules())
 		{
-			Message.send(sender, "§9 - " + Hyacinth.getModuleManager().getConfiguration(m).getString("name") + " " + Hyacinth.getModuleManager().getConfiguration(m).getString("version"));
+			Message.send(sender, "§9 - " + m.getConfiguration().getString("name") + " " + m.getConfiguration().getString("version"));
 		}
 	}
 

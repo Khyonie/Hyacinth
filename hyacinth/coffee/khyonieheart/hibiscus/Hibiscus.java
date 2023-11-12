@@ -6,8 +6,8 @@ import java.util.Map;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import coffee.khyonieheart.crafthyacinth.event.HyacinthListenerManager;
 import coffee.khyonieheart.hibiscus.actionable.OpenCloseActionable;
+import coffee.khyonieheart.hyacinth.Hyacinth;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
 import coffee.khyonieheart.hyacinth.util.YamlUtils;
 
@@ -17,7 +17,7 @@ public class Hibiscus implements HyacinthModule
 		"name",        "Hibiscus",
 		"description", "General purpose GUI library",
 		"entry",       "coffee.khyonieheart.hibiscus.Hibiscus",
-		"version",     1.0,
+		"version",     "1.0.0",
 		"author",      "Khyonie"
 	);
 
@@ -29,7 +29,7 @@ public class Hibiscus implements HyacinthModule
 	{
 		instance = this;
 
-		HyacinthListenerManager.register(this.getClass(), new GuiListener());
+		Hyacinth.getListenerManager().register(this.getClass(), new GuiListener());
 	}
 
 	@Override
@@ -43,7 +43,8 @@ public class Hibiscus implements HyacinthModule
 		});
 	}
 
-	public static YamlConfiguration getConfiguration()
+	@Override
+	public YamlConfiguration getConfiguration()
 	{
 		return configuration;
 	}

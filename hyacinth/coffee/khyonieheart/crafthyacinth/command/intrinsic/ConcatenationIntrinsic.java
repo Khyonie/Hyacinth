@@ -7,11 +7,26 @@ import coffee.khyonieheart.hyacinth.command.parser.ValidatorContext;
 import coffee.khyonieheart.hyacinth.option.Option;
 import coffee.khyonieheart.hyacinth.util.Arrays;
 
+/**
+ * Intrinsic command validator that ensures all Hyacinth commands that support quoted arguments (I.E grouping arguments together as a single 
+ * string with start/stop quotation marks) contains its quotes in correct locations.
+ *
+ * @since 1.0.0
+ * @author Khyonie
+ *
+ * @deprecated Will be supersceded by Tidal 2.0.
+ */
+@Deprecated
 public class ConcatenationIntrinsic implements IntrinsicValidator
 {
 	@Override
-	public Option validate(CommandSender sender, ValidatorContext context, String commandLabel, int argsCount, String[] args) 
-	{
+	public Option validate(
+		CommandSender sender, 
+		ValidatorContext context, 
+		String commandLabel, 
+		int argsCount, 
+		String[] args
+	) {
 		boolean started = false;
 		int startPosition = -1;
 
@@ -68,7 +83,6 @@ public class ConcatenationIntrinsic implements IntrinsicValidator
 				case TABCOMPLETE -> Option.some("§c(⚠ Quoted argument is not properly closed starting at position " + startPosition + ")");
 			};
 		}
-
 
 		return Option.none();
 	}

@@ -3,7 +3,9 @@ package coffee.khyonieheart.hibiscus;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.hyacinth.util.marker.Range;
 
 public interface Gui
 {
@@ -13,7 +15,10 @@ public interface Gui
 	 * @param name Name of configuration, ex. "page1", "page2" for paged GUIs, or "main" for static configurations
 	 * @param configuration Configuration data
 	 */
-	public void addConfiguration(String name, GuiConfiguration configuration);
+	public void addConfiguration(
+		@NotNull String name, 
+		@NotNull GuiConfiguration configuration
+	);
 	
 	/**
 	 * Sets the active configuration for a player, clearing all configurations and rebuilding the GUI with the new configuration.
@@ -21,7 +26,10 @@ public interface Gui
 	 * @param player Player to set configuration for
 	 * @param configurationName Configuration to switch to
 	 */
-	public void setConfiguration(Player player, String configurationName);
+	public void setConfiguration(
+		@NotNull Player player, 
+		@NotNull String configurationName
+	);
 
 	/**
 	 * Adds a layer to a GUI.
@@ -30,7 +38,11 @@ public interface Gui
 	 * @param row Row of GUI to start layer, ex. 0 would embed to the top of the GUI, 1 would be the second row, etc.
 	 * @param configurationName Configuration to be layered
 	 */
-	public void addLayer(Player player, int row, String configurationName);
+	public void addLayer(
+		@NotNull Player player, 
+		@Range(minimum = 0, maximum = 6) int row, 
+		@NotNull String configurationName
+	);
 
 	/**
 	 * Removes the top layer of a GUI.

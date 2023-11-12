@@ -11,6 +11,10 @@ import coffee.khyonieheart.hyacinth.util.Arrays;
 import coffee.khyonieheart.hyacinth.util.marker.NotEmpty;
 import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
+/**
+ * @deprecated Will be supersceded by Tidal 2.0.
+ */
+@Deprecated
 public class HyacinthCompletionBranch implements CompletionBranch
 {
 	private Map<String, CompletionBranch> attachedBranches = new HashMap<>();

@@ -13,7 +13,7 @@ public interface Configurable
 {
     public YamlConfiguration getDefaultConfiguration();
 
-    public YamlConfiguration getConfiguration();
+    public YamlConfiguration getModuleConfiguration();
 
     public default Map<String, Object> verify(YamlConfiguration config, YamlConfiguration defaultConfig)
     {

@@ -22,7 +22,7 @@ public abstract class HyacinthJavaPlugin extends JavaPlugin implements HyacinthM
 	{
 		// Register self
 		this.config = this.buildHyacinthConfig();
-		Hyacinth.getModuleManager().addModule(this, this.config);
+		Hyacinth.getModuleManager().registerModule(this);
 
 		this.onPluginEnable();
 	}
@@ -43,10 +43,17 @@ public abstract class HyacinthJavaPlugin extends JavaPlugin implements HyacinthM
 	{
 		return YamlUtils.of(
 			"name", this.getDescription().getName(),
+			"package", this.getClass().getPackageName(),
 			"version", this.getDescription().getVersion(),
 			"entry", this.getDescription().getMain(),
 			"description", this.getDescription().getDescription() == null ? "(No description specified)" : this.getDescription().getDescription(),
 			"author", this.getDescription().getAuthors().isEmpty() ? "(No author(s) specified)" : Arrays.toString(Arrays.toArray(String[].class, this.getDescription().getAuthors()), ", ", null)
 		);
+	}
+
+	@Override
+	public YamlConfiguration getConfiguration()
+	{
+		return this.config;
 	}
 }

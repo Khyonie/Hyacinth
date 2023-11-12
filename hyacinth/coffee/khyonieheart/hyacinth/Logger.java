@@ -1,5 +1,8 @@
 package coffee.khyonieheart.hyacinth;
 
+import coffee.khyonieheart.hyacinth.module.nouveau.ClassCoordinator;
+import coffee.khyonieheart.hyacinth.module.nouveau.ModuleFile;
+
 /**
  * Various utilities related to logging.
  * 
@@ -8,6 +11,8 @@ package coffee.khyonieheart.hyacinth;
  */
 public class Logger 
 {
+	private static String previousClass;
+
 	/**
 	 * Prints a message in the console and adds it to the log.
 	 *
@@ -15,7 +20,17 @@ public class Logger
 	 */
     public static void log(String message)
     {
-        Hyacinth.getInstance().getServer().getConsoleSender().sendMessage(Hyacinth.getConfig("regularLoggingFlavor", String.class) + message);
+		ModuleFile owner = ClassCoordinator.getOwningModule(Thread.currentThread().getStackTrace()[2].getClassName());
+		String name = (owner == null ? "Hyacinth" : owner.getConfiguration().getString("name"));
+
+		String[] classNameSplit = Thread.currentThread().getStackTrace()[2].getClassName().split("\\.");
+		String className = classNameSplit[classNameSplit.length - 1];
+		char color = className.equals(previousClass) ? '8' : 'e'; 
+		String contextLine = color == '8' ? "§e├ " : "§e┌ ";
+
+        Hyacinth.getInstance().getServer().getConsoleSender().sendMessage(Hyacinth.getConfig("regularLoggingFlavor", String.class).replace("%MODULE", name).replace("%CLASS", contextLine + "§" + color + className).replace("%METHOD", "§" + color + Thread.currentThread().getStackTrace()[2].getMethodName()) + message);
+
+		previousClass = className;
     }   
     
 	/**
@@ -30,7 +45,19 @@ public class Logger
             return;
         }
 
-        Hyacinth.getInstance().getServer().getConsoleSender().sendMessage(Hyacinth.getConfig("verboseLoggingFlavor", String.class) + message);
+		ModuleFile owner = ClassCoordinator.getOwningModule(Thread.currentThread().getStackTrace()[2].getClassName());
+		String name = (owner == null ? "Hyacinth" : owner.getConfiguration().getString("name"));
+
+		StackTraceElement element = Thread.currentThread().getStackTrace()[2];
+		String[] classNameSplit = element.getClassName().split("\\.");
+		String className = classNameSplit[classNameSplit.length - 1];
+		char color = className.equals(previousClass) ? '8' : 'e'; 
+		String contextLine = color == '8' ? "§e├ " : "§e┌ ";
+
+
+        Hyacinth.getInstance().getServer().getConsoleSender().sendMessage(Hyacinth.getConfig("verboseLoggingFlavor", String.class).replace("%MODULE", name).replace("%CLASS", contextLine + "§" + color + className).replace("%METHOD", "§" + color + element.getMethodName() + ":§6" + element.getLineNumber()) + message);
+
+		previousClass = className;
     }
 
     /**
@@ -43,7 +70,18 @@ public class Logger
     @Deprecated(forRemoval = false)
     public static void debug(String message)
     {
-        Hyacinth.getInstance().getServer().getConsoleSender().sendMessage("§1Hyacinth §a> §d DEBUG §8 §8> §c" + message);
+		ModuleFile owner = ClassCoordinator.getOwningModule(Thread.currentThread().getStackTrace()[2].getClassName());
+		String name = (owner == null ? "Hyacinth" : owner.getConfiguration().getString("name"));
+
+		StackTraceElement element = Thread.currentThread().getStackTrace()[2];
+		String[] classNameSplit = element.getClassName().split("\\.");
+		String className = classNameSplit[classNameSplit.length - 1];
+		char color = className.equals(previousClass) ? '8' : 'e'; 
+		String contextLine = color == '8' ? "§e├ " : "§e┌ ";
+
+        Hyacinth.getInstance().getServer().getConsoleSender().sendMessage(Hyacinth.getConfig("debugLoggingFlavor", String.class).replace("%MODULE", name).replace("%CLASS", contextLine + "§" + color + className).replace("%METHOD", "§" + color + element.getMethodName() + ":§4" + element.getLineNumber()) + message);
+
+		previousClass = className;
     }
 
     /**
@@ -56,6 +94,23 @@ public class Logger
     @Deprecated(forRemoval = false)
     public static void todo(String message)
     {
-        Hyacinth.getInstance().getServer().getConsoleSender().sendMessage("§cHyacinth §a> §4 TO-DO §8 §8> §c" + message);
+		ModuleFile owner = ClassCoordinator.getOwningModule(Thread.currentThread().getStackTrace()[2].getClassName());
+		String name = (owner == null ? "Hyacinth" : owner.getConfiguration().getString("name"));
+
+		String[] classNameSplit = Thread.currentThread().getStackTrace()[2].getClassName().split("\\.");
+		String className = classNameSplit[classNameSplit.length - 1];
+		char color = className.equals(previousClass) ? '8' : 'e'; 
+		String contextLine = color == '8' ? "§e├ " : "§e┌ ";
+
+        Hyacinth.getInstance().getServer().getConsoleSender().sendMessage(Hyacinth.getConfig("todoLoggingFlavor", String.class).replace("%MODULE", name).replace("%CLASS", contextLine + "§" + color + className).replace("%METHOD", "§" + color + Thread.currentThread().getStackTrace()[2].getMethodName()) + message);
+
+		previousClass = className;
     }
+
+	private static void queueMessage(
+		String message,
+		String newClass
+	) {
+		
+	}
 }

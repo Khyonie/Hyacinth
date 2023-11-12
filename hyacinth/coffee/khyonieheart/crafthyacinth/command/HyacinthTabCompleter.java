@@ -33,7 +33,10 @@ import coffee.khyonieheart.hyacinth.util.Strings;
  *
  * @author Khyonie
  * @since 1.0.0
+ *
+ * @deprecated Will be supersceded by Tidal 2.0.
  */
+@Deprecated
 public class HyacinthTabCompleter implements TabCompleter
 {
 	private HyacinthCommand command;
