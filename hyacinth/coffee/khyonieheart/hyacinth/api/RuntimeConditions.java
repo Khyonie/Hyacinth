@@ -4,7 +4,7 @@ import coffee.khyonieheart.hyacinth.exception.NumberOutOfRangeException;
 
 public class RuntimeConditions
 {
-	public static void requireWithinRange(
+	public static int requireWithinRange(
 		int input, 
 		int minimum, 
 		int maximum
@@ -15,9 +15,11 @@ public class RuntimeConditions
 		{
 			throw new NumberOutOfRangeException(input, "Expected number between " + minimum + " and " + maximum + ", received " + input);
 		}
+
+		return input;
 	}
 
-	public static void requirePositive(
+	public static int requirePositive(
 		int input
 	)
 		throws NumberOutOfRangeException
@@ -26,5 +28,7 @@ public class RuntimeConditions
 		{
 			throw new NumberOutOfRangeException(input, "Expected positive number, received " + input);
 		}
+
+		return input;
 	}
 }
