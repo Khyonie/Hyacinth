@@ -28,7 +28,12 @@ public class Lists
 		Iterator<E> iter = list.iterator();
 		while (iter.hasNext())
 		{
-			builder.append(iter.next());
+            try {
+                builder.append(mapper != null ? mapper.apply(iter.next()) : iter.next());
+            } catch (Exception e) {
+                builder.append("--- EXCEPTION THROWN @ INDEX ---");
+                e.printStackTrace();
+            }
 
 			if (iter.hasNext())
 			{

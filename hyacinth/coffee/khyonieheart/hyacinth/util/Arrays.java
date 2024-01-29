@@ -1,7 +1,9 @@
 package coffee.khyonieheart.hyacinth.util;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import coffee.khyonieheart.hyacinth.api.RuntimeConditions;
@@ -73,6 +75,21 @@ public class Arrays
 		RuntimeConditions.requireWithinRange(size, 0, 255);
 
 		return (T[]) java.lang.reflect.Array.newInstance(type, size);
+	}
+
+	@NotNull
+	public static <T> ArrayList<T> toArrayList(
+		T[] data
+	) {
+		Objects.requireNonNull(data);
+
+		ArrayList<T> list = new ArrayList<>();
+		for (T t : data)
+		{
+			list.add(t);
+		}
+
+		return list;
 	}
 
 	/**

@@ -1,8 +1,10 @@
 package coffee.khyonieheart.hyacinth;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.jar.JarFile;
 
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -163,7 +165,7 @@ public class Hyacinth extends JavaPlugin
 				YamlConfiguration config = module.getConfiguration();
 				Logger.verbose("Running onEnable() for module " + (config != null ? config.getString("name") : ClassCoordinator.getOwningModule(module.getClass()).getConfiguration().getString("name")));
 				module.onEnable();
-			} catch (Exception e) {
+			} catch (Exception | Error e) {
 				Logger.log("§cFailed to enable module " + module.getClass().getName());
 				e.printStackTrace();
 			}
@@ -173,6 +175,17 @@ public class Hyacinth extends JavaPlugin
         Logger.log("Loaded in " + (System.currentTimeMillis() - currentTime) + " ms");
 
         // Loading complete
+		try (Reader reader = new FileReader("test.toml")) {
+			String output = "";
+			int c;
+			while ((c = reader.read()) != -1)
+			{
+				output += (char) c;
+			}
+			Logger.debug(output);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     @Override

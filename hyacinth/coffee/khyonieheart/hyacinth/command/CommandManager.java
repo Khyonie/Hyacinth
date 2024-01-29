@@ -46,4 +46,7 @@ public interface CommandManager
     public Command getRegisteredCommand(
         @NotNull String name
     );
+
+	@Nullable
+	public CommandMap getCommandMap();
 }
