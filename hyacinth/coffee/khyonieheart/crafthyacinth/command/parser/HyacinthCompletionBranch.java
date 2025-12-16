@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import coffee.khyonieheart.anenome.Arrays;
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.command.parser.CompletionBranch;
 import coffee.khyonieheart.hyacinth.command.parser.Validator;
-import coffee.khyonieheart.hyacinth.util.Arrays;
 import coffee.khyonieheart.hyacinth.util.marker.NotEmpty;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
  * @deprecated Will be supersceded by Tidal 2.0.
@@ -63,7 +63,7 @@ public class HyacinthCompletionBranch implements CompletionBranch
 	@Override
 	public String[] allBranches()
 	{
-		return Arrays.toArray(String[].class, new ArrayList<>(attachedBranches.keySet()));
+		return Arrays.toArray(String.class, new ArrayList<>(attachedBranches.keySet()));
 	}
 
 	@Override

@@ -11,13 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.hibiscus.Element;
 import coffee.khyonieheart.hibiscus.GuiConfiguration;
 import coffee.khyonieheart.hibiscus.element.ButtonElement;
 import coffee.khyonieheart.hibiscus.element.ItemStackElement;
 import coffee.khyonieheart.hibiscus.inventory.InventoryBuilder;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 /**
  * Base implementation of a paged GUI that automatically generates configurations for each "page" of given elements.

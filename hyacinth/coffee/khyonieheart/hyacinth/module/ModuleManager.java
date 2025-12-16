@@ -2,8 +2,8 @@ package coffee.khyonieheart.hyacinth.module;
 
 import java.util.Collection;
 
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 
 public interface ModuleManager
 {

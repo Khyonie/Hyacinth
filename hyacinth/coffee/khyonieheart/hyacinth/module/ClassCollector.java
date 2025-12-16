@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.jar.JarEntry;
 
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
+import coffee.khyonieheart.anenome.NotNull;
 
 public interface ClassCollector<T> extends Iterable<T>
 {

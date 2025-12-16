@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.exception.InstantiationRuntimeException;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
  * Various reflection utilities.

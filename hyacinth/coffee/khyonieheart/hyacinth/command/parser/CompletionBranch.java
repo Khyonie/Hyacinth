@@ -2,9 +2,9 @@ package coffee.khyonieheart.hyacinth.command.parser;
 
 import java.util.List;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.hyacinth.util.marker.NotEmpty;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 /**
  * An object representing a either a root, branch, or leaf connected to a larger command argument tree.

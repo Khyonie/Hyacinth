@@ -3,8 +3,8 @@ package coffee.khyonieheart.hyacinth.module;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import coffee.khyonieheart.anenome.Arrays;
 import coffee.khyonieheart.hyacinth.Hyacinth;
-import coffee.khyonieheart.hyacinth.util.Arrays;
 import coffee.khyonieheart.hyacinth.util.YamlUtils;
 
 /**
@@ -47,7 +47,7 @@ public abstract class HyacinthJavaPlugin extends JavaPlugin implements HyacinthM
 			"version", this.getDescription().getVersion(),
 			"entry", this.getDescription().getMain(),
 			"description", this.getDescription().getDescription() == null ? "(No description specified)" : this.getDescription().getDescription(),
-			"author", this.getDescription().getAuthors().isEmpty() ? "(No author(s) specified)" : Arrays.toString(Arrays.toArray(String[].class, this.getDescription().getAuthors()), ", ", null)
+			"author", this.getDescription().getAuthors().isEmpty() ? "(No author(s) specified)" : Arrays.toString(Arrays.toArray(String.class, this.getDescription().getAuthors()), ", ", null)
 		);
 	}
 

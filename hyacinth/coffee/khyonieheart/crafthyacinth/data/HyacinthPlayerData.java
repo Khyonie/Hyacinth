@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import org.bukkit.entity.Player;
 
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
+import coffee.khyonieheart.anenome.NotNull;
 
 public class HyacinthPlayerData
 {

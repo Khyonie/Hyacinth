@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 
 /**
  * Various utilities related to Java lists.

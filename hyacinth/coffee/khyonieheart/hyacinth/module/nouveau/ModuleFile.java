@@ -11,11 +11,11 @@ import java.util.jar.JarFile;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
 import coffee.khyonieheart.hyacinth.module.ModuleOwned;
 import coffee.khyonieheart.hyacinth.util.JarUtils;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 public class ModuleFile implements ModuleOwned
 {

@@ -11,6 +11,8 @@ import java.util.Objects;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.crafthyacinth.module.HyacinthCoreModule;
 import coffee.khyonieheart.crafthyacinth.module.nouveau.BootstrapFileCollector;
 import coffee.khyonieheart.crafthyacinth.module.nouveau.BootstrapFileVerifier;
@@ -27,8 +29,8 @@ import coffee.khyonieheart.hyacinth.module.nouveau.pipeline.FileVerificationShad
 import coffee.khyonieheart.hyacinth.util.Collections;
 import coffee.khyonieheart.hyacinth.util.Lists;
 import coffee.khyonieheart.hyacinth.util.Reflect;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.tidal.EnumClassShader;
+import coffee.khyonieheart.tidal.TypeManager;
 
 public class ModuleLoaderPipeline
 {
@@ -140,6 +142,11 @@ public class ModuleLoaderPipeline
 		classShaders.get(LoaderPriority.NORMAL).add(new CommandShader<>());
 		classShaders.get(LoaderPriority.NORMAL).add(new ListenerShader());
 		classShaders.get(LoaderPriority.NORMAL).add(new FeatureShader());
+
+		// Tidal
+		classShaders.get(LoaderPriority.HIGH).add(new EnumClassShader());
+		classShaders.get(LoaderPriority.HIGHEST).add(new TypeManager());
+		// End tidal
 
 		for (LoaderPriority priority : LoaderPriority.values())
 		{

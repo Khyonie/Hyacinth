@@ -11,9 +11,9 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Range;
 import coffee.khyonieheart.hibiscus.Element;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Range;
 
 public class ItemStackElement implements Element
 {
@@ -30,8 +30,7 @@ public class ItemStackElement implements Element
 	public ItemStackElement(
 		@NotNull Material material, 
 		@NotNull String name, 
-		@Range(minimum = 0, maximum = Integer.MAX_VALUE)
-			int amount, 
+		@Range(min = 0, max = Integer.MAX_VALUE) int amount, 
 		String... lore
 	) {
 		Objects.requireNonNull(material);

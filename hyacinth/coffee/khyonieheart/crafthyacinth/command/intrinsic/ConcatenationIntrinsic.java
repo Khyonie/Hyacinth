@@ -2,10 +2,10 @@ package coffee.khyonieheart.crafthyacinth.command.intrinsic;
 
 import org.bukkit.command.CommandSender;
 
+import coffee.khyonieheart.anenome.Arrays;
 import coffee.khyonieheart.hyacinth.command.intrinsic.IntrinsicValidator;
 import coffee.khyonieheart.hyacinth.command.parser.ValidatorContext;
 import coffee.khyonieheart.hyacinth.option.Option;
-import coffee.khyonieheart.hyacinth.util.Arrays;
 
 /**
  * Intrinsic command validator that ensures all Hyacinth commands that support quoted arguments (I.E grouping arguments together as a single 

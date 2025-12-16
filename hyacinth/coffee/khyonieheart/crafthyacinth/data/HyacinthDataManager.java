@@ -16,11 +16,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.google.gson.reflect.TypeToken;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.Logger;
 import coffee.khyonieheart.hyacinth.data.PlayerDataManager;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
 import coffee.khyonieheart.hyacinth.util.JsonUtils;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
  * Internal implementation of a player data manager.

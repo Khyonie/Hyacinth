@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.killswitch.Feature;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 public class FeatureManager
 {

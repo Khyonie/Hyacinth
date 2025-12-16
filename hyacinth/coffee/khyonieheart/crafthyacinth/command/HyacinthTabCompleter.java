@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
+import coffee.khyonieheart.anenome.Arrays;
 import coffee.khyonieheart.crafthyacinth.command.parser.validator.PermissionValidator;
 import coffee.khyonieheart.hyacinth.Logger;
 import coffee.khyonieheart.hyacinth.command.HyacinthCommand;
@@ -24,7 +25,6 @@ import coffee.khyonieheart.hyacinth.command.parser.SuggestionValidator;
 import coffee.khyonieheart.hyacinth.command.parser.Validator;
 import coffee.khyonieheart.hyacinth.command.parser.ValidatorContext;
 import coffee.khyonieheart.hyacinth.option.Option;
-import coffee.khyonieheart.hyacinth.util.Arrays;
 import coffee.khyonieheart.hyacinth.util.Lists;
 import coffee.khyonieheart.hyacinth.util.Strings;
 

@@ -17,14 +17,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
+import coffee.khyonieheart.anenome.Range;
 import coffee.khyonieheart.hibiscus.ClickOffAction;
 import coffee.khyonieheart.hibiscus.Element;
 import coffee.khyonieheart.hibiscus.Gui;
 import coffee.khyonieheart.hibiscus.GuiConfiguration;
 import coffee.khyonieheart.hibiscus.Hibiscus;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
-import coffee.khyonieheart.hyacinth.util.marker.Range;
 
 /**
  * Base implementation of a Hibiscus GUI.
@@ -71,7 +71,7 @@ public class HibiscusGui implements Gui
 
 	public HibiscusGui(
 		@Nullable String inventoryLabel, 
-		@Range(minimum = 1, maximum = 6) int rows, 
+		@Range(min = 1, max = 6) int rows, 
 		@NotNull Inventory inventory
 	) {
 		if (rows < 1 || rows > 6)
