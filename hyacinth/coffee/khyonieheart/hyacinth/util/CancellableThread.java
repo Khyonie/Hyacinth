@@ -3,7 +3,7 @@ package coffee.khyonieheart.hyacinth.util;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
+import coffee.khyonieheart.anenome.NotNull;
 
 public class CancellableThread extends Thread
 {

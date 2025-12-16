@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 
 /**
  * Utility class that handles registration of tab complete suggestion generators.

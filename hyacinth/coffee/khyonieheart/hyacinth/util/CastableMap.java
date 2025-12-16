@@ -5,9 +5,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import coffee.khyonieheart.anenome.ArrayIterator;
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.crafthyacinth.data.CastableHashMap;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 /**
  * Specialization of a Map that allows casting stored values.
@@ -172,7 +173,7 @@ public interface CastableMap<K, V> extends Map<K, V>
 		}
 
 		CastableMap<K, Object> map = new CastableHashMap<>();
-		Iterator<Object> iter = Arrays.iterator(pairs);
+		Iterator<Object> iter = new ArrayIterator<>(pairs);
 
 		while (iter.hasNext())
 		{

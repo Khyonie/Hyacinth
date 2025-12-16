@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.crafthyacinth.command.HyacinthCommandManager;
 import coffee.khyonieheart.crafthyacinth.event.HyacinthListenerManager;
 import coffee.khyonieheart.crafthyacinth.module.HyacinthCoreModule;
@@ -24,8 +26,6 @@ import coffee.khyonieheart.hyacinth.module.nouveau.ModuleLoaderPipeline;
 import coffee.khyonieheart.hyacinth.util.Folders;
 import coffee.khyonieheart.hyacinth.util.JarUtils;
 import coffee.khyonieheart.hyacinth.util.YamlUtils;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 /**
  * Main class for the Hyacinth API.
@@ -163,7 +163,7 @@ public class Hyacinth extends JavaPlugin
 				YamlConfiguration config = module.getConfiguration();
 				Logger.verbose("Running onEnable() for module " + (config != null ? config.getString("name") : ClassCoordinator.getOwningModule(module.getClass()).getConfiguration().getString("name")));
 				module.onEnable();
-			} catch (Exception e) {
+			} catch (Exception | Error e) {
 				Logger.log("§cFailed to enable module " + module.getClass().getName());
 				e.printStackTrace();
 			}

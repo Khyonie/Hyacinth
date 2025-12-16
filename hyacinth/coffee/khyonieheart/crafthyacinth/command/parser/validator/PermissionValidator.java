@@ -4,11 +4,11 @@ import java.util.Objects;
 
 import org.bukkit.command.CommandSender;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.command.parser.CompletionBranch;
 import coffee.khyonieheart.hyacinth.command.parser.DualValidator;
 import coffee.khyonieheart.hyacinth.command.parser.ValidatorContext;
 import coffee.khyonieheart.hyacinth.option.Option;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
  * Validator collection that verifies a user's permission.

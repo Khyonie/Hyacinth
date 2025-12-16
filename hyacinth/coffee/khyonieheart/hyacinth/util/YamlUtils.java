@@ -11,8 +11,8 @@ import java.util.jar.JarFile;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.util.marker.NotEmpty;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
  * Collection of various utilities for creating and checking .yaml configurations.

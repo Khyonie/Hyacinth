@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 
 /**
  * Various utilities related to Java lists.
@@ -28,7 +28,12 @@ public class Lists
 		Iterator<E> iter = list.iterator();
 		while (iter.hasNext())
 		{
-			builder.append(iter.next());
+            try {
+                builder.append(mapper != null ? mapper.apply(iter.next()) : iter.next());
+            } catch (Exception e) {
+                builder.append("--- EXCEPTION THROWN @ INDEX ---");
+                e.printStackTrace();
+            }
 
 			if (iter.hasNext())
 			{

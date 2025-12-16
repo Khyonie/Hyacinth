@@ -99,4 +99,10 @@ public class HyacinthCommandManager implements CommandManager
 	) {
         return registeredCommands.get(name);
     }
+
+	@Override
+	public CommandMap getCommandMap() 
+	{
+		return this.activeCommandMap;
+	}
 }

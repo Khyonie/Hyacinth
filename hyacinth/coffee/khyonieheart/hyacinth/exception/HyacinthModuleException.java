@@ -1,7 +1,7 @@
 package coffee.khyonieheart.hyacinth.exception;
 
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 /**
  * Parent class for all Hyacinth module-loading exceptions.

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.crafthyacinth.module.HyacinthCoreModule;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 public class ClassCoordinator
 {

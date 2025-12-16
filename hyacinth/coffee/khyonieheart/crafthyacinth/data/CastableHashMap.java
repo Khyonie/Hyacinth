@@ -3,9 +3,9 @@ package coffee.khyonieheart.crafthyacinth.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.hyacinth.util.CastableMap;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 /**
  * Extension of java.util.HashMap which allows casting of mapped values.

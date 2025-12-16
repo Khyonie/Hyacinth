@@ -1,7 +1,7 @@
 package coffee.khyonieheart.hyacinth.module.nouveau.pipeline;
 
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 
 public interface ClassShader<T>
 {

@@ -2,11 +2,11 @@ package coffee.khyonieheart.crafthyacinth.command.parser.validator;
 
 import org.bukkit.command.CommandSender;
 
+import coffee.khyonieheart.anenome.Arrays;
 import coffee.khyonieheart.hyacinth.command.parser.CompletionBranch;
 import coffee.khyonieheart.hyacinth.command.parser.DualValidator;
 import coffee.khyonieheart.hyacinth.command.parser.ValidatorContext;
 import coffee.khyonieheart.hyacinth.option.Option;
-import coffee.khyonieheart.hyacinth.util.Arrays;
 
 /**
  * A collection of validators to verify numerical inputs.

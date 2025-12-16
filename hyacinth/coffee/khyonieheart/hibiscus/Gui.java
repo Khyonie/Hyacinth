@@ -3,9 +3,9 @@ package coffee.khyonieheart.hibiscus;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
-import coffee.khyonieheart.hyacinth.util.marker.Range;
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
+import coffee.khyonieheart.anenome.Range;
 
 public interface Gui
 {
@@ -40,7 +40,7 @@ public interface Gui
 	 */
 	public void addLayer(
 		@NotNull Player player, 
-		@Range(minimum = 0, maximum = 6) int row, 
+		@Range(min = 0, max = 6) int row, 
 		@NotNull String configurationName
 	);
 

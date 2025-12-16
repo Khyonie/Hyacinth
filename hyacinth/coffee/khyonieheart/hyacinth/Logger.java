@@ -106,11 +106,4 @@ public class Logger
 
 		previousClass = className;
     }
-
-	private static void queueMessage(
-		String message,
-		String newClass
-	) {
-		
-	}
 }

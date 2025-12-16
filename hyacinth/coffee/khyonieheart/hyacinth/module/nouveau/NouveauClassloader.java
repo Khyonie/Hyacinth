@@ -8,8 +8,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.Logger;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 public class NouveauClassloader extends URLClassLoader
 {

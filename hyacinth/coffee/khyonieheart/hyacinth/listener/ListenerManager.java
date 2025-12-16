@@ -2,8 +2,8 @@ package coffee.khyonieheart.hyacinth.listener;
 
 import org.bukkit.event.Listener;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 public interface ListenerManager
 {

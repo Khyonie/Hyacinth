@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.bukkit.event.Listener;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.Hyacinth;
 import coffee.khyonieheart.hyacinth.listener.ListenerManager;
 import coffee.khyonieheart.hyacinth.module.HyacinthModule;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
  * Listener management, registration, and unregistration.

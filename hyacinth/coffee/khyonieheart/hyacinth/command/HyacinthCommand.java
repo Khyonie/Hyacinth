@@ -10,6 +10,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.crafthyacinth.command.intrinsic.ConcatenationIntrinsic;
 import coffee.khyonieheart.hyacinth.Message;
 import coffee.khyonieheart.hyacinth.command.intrinsic.IntrinsicValidator;
@@ -22,8 +24,6 @@ import coffee.khyonieheart.hyacinth.command.parser.ValidatorContext;
 import coffee.khyonieheart.hyacinth.module.ModuleOwned;
 import coffee.khyonieheart.hyacinth.option.Option;
 import coffee.khyonieheart.hyacinth.util.marker.NotEmpty;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 public abstract class HyacinthCommand extends Command implements ModuleOwned
 {

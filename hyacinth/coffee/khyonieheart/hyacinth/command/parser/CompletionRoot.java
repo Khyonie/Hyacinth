@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.hyacinth.util.marker.NotEmpty;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
  * Represents the root of an argument tree.

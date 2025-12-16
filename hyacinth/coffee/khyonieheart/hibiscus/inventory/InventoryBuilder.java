@@ -10,32 +10,32 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import coffee.khyonieheart.hyacinth.api.RuntimeConditions;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
-import coffee.khyonieheart.hyacinth.util.marker.Range;
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
+import coffee.khyonieheart.anenome.Range;
+import coffee.khyonieheart.anenome.RuntimeConditions;
 
 public class InventoryBuilder
 {
 	private Inventory inventory;
 
 	private InventoryBuilder(
-		@Range(minimum = 1, maximum = 6) int rows, 
+		@Range(min = 1, max = 6) int rows, 
 		@NotNull String name
 	) {
 		Objects.requireNonNull(name);
-		RuntimeConditions.requireWithinRange(rows, 1, 6);
+		RuntimeConditions.requireRange(rows, 1, 6);
 
 		inventory = Bukkit.createInventory(null, rows * 9, name);
 	}
 
 	@NotNull
 	public static InventoryBuilder builder(
-		@Range(minimum = 1, maximum = 6) int rows, 
+		@Range(min = 1, max = 6) int rows, 
 		@NotNull String name
 	) {
 		Objects.requireNonNull(name);
-		RuntimeConditions.requireWithinRange(rows, 1, 6);
+		RuntimeConditions.requireRange(rows, 1, 6);
 
 		return new InventoryBuilder(rows, name);
 	}
@@ -45,7 +45,7 @@ public class InventoryBuilder
 		int slot, 
 		@NotNull Material material, 
 		@NotNull String name, 
-		@Range(minimum = 0, maximum = Integer.MAX_VALUE) int count, 
+		@Range(min = 0, max = Integer.MAX_VALUE) int count, 
 		String... lore
 	) {
 		Objects.requireNonNull(material);
@@ -100,8 +100,8 @@ public class InventoryBuilder
 		int y2, 
 		@Nullable ItemStack item
 	) {
-		RuntimeConditions.requireWithinRange(x1, 0, 8);
-		RuntimeConditions.requireWithinRange(x1, 0, 8);
+		RuntimeConditions.requireRange(x1, 0, 8);
+		RuntimeConditions.requireRange(x1, 0, 8);
 
 		if (y1 < 0 || y1 >= (inventory.getSize() / 9) || y2 < 0 || y2 >= (inventory.getSize() / 9))
 		{

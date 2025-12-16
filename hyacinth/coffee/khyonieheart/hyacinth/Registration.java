@@ -13,11 +13,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import coffee.khyonieheart.anenome.NotNull;
 import coffee.khyonieheart.crafthyacinth.command.HyacinthCommandManager;
 import coffee.khyonieheart.hyacinth.command.BukkitCommandMeta;
 import coffee.khyonieheart.hyacinth.command.HyacinthCommand;
 import coffee.khyonieheart.hyacinth.util.marker.NotEmpty;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
 
 /**
  * Various tools to register commands and listeners. 

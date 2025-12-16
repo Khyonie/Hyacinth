@@ -2,10 +2,10 @@ package coffee.khyonieheart.hibiscus.actionable;
 
 import org.bukkit.entity.Player;
 
+import coffee.khyonieheart.anenome.NotNull;
+import coffee.khyonieheart.anenome.Nullable;
 import coffee.khyonieheart.hibiscus.Gui;
 import coffee.khyonieheart.hibiscus.GuiConfiguration;
-import coffee.khyonieheart.hyacinth.util.marker.NotNull;
-import coffee.khyonieheart.hyacinth.util.marker.Nullable;
 
 public interface OpenCloseActionable
 {
