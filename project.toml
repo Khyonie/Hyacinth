@@ -1,39 +1,22 @@
-[project]
+[project] 
 name = "Hyacinth"
+version = "0.6.0"
+description = "Because plugin development should be simple."
+natures = [ "eclipse", "maven" ] 
+authors = "Hailey-Jane \"Khyonie\" Garrett"
+homepage = "http://khyonieheart.coffee/hyacinth/"
+sourcepage = "https://github.com/Khyonie/Hyacinth/"
 
-# Default settings
-# No sources or outputs are defined so this task cannot compile
-[task]
-java_version = 21 # Minimum release version should be Java 21 because Mojang says so
-shaded_jars = [ "lib/Anenome.jar", "lib/Lilac.jar" ]
-include = [ "plugin.yml", "meta/meta.yml", "meta/hyacinth.yml" ]
-[task.compiler]
-store_parameter_names = true
+[dependencies]
+spigot-api = { type = "fetchFromMaven", url = "https://hub.spigotmc.org/nexus/repository/snapshots/", group_id = "org.spigotmc", artifact_id = "spigot-api", update_policy = "Always", classifier = "shaded", javadoc = "https://hub.spigotmc.org/javadocs/spigot/" }
+anenome = { type = "fetchFromGithub", username = "Khyonie", repository = "Anenome", tag = "v0.4.0" }
+lilac = { type = "fetchFromGithub", username = "Khyonie", repository = "Lilac", tag = "v2.1.0-beta.1" }
 
-# When updating, create a new task for the outgoing version 
-# "latest" should always refer to the latest version
-[task_latest] # Currently 1.20.6 (v1_20_R4)
-description = "Build Hyacinth for the latest version of Minecraft"
-source = [ "hyacinth/" ]
-libraries = [ "lib/v1_20_R4/", "lib/Anenome.jar", "lib/Lilac.jar" ]
-output = [ "~/Servers/Minecraft/Violet/plugins/Hyacinth.jar", "~/Servers/Minecraft/1.20.6/plugins/Hyacinth.jar", "./Hyacinth.jar" ]
-
-[task_latest.javadocs]
-"lib/v1_20_R4/spigot-api-1.20.6-R0.1-SNAPSHOT.jar" = "https://hub.spigotmc.org/javadocs/spigot/"
-"lib/Anenome.jar" = "http://www.khyonieheart.coffee/javadoc/anenome/"
-"lib/Lilac.jar" = "http://www.khyonieheart.coffee/javadoc/lilac/"
-
-# Legacy builds
-#-------------------------------------------------------------------------------- 
-
-[task_1_20_R3] # 1.20.4
-description = "Build Hyacinth for Minecraft version 1_20_R3"
-source = [ "hyacinth/" ]
-libraries = [ "lib/v1_20_R3/", "lib/Anenome.jar", "lib/Lilac.jar" ]
-output = [ "~/Servers/Minecraft/1.20.4/plugins/Hyacinth.jar" ]
-
-[task_1_19_R3] # 1.19.4
-description = "Build Hyacinth for Minecraft version 1_19_R3"
-source = [ "legacy/v1_19_R3/" ]
-libraries = [ "lib/v1_19_R3" ]
-output = [ "~/Servers/Minecraft/1.19.4/plugins/Hyacinth.jar" ]
+[configuration.latest]
+sources = [ "src/hyacinth/plugin/", "src/hyacinth/api/", "src/hibiscus/main/", "src/hibiscus/api/", "src/tidal/api/" ] 
+dependencies = [ "spigot-api", "anenome", "lilac" ] 
+shaded = [ "anenome", "lilac" ]
+targets = [ "targets/{configuration}/Hyacinth-{configuration}-{version}.jar" ]
+includes = [ "plugin.yml", "meta/meta.yml", "meta/hyacinth.yml" ]
+java_version = 21
+compliler_flags = { store_parameter_names = true }
